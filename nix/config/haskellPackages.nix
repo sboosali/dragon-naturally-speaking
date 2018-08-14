@@ -1,5 +1,6 @@
 ##################################################
-pkgs:
+{ pkgs
+}:
 ##################################################
 let
 
@@ -21,7 +22,8 @@ manualOverrides = self: super:
 in
 ##################################################
 
-pkgs.haskellPackages.override {
+pkgs.haskellPackages.override
+{
   overrides =
     pkgs.lib.composeExtensions generatedOverrides manualOverrides;
 }

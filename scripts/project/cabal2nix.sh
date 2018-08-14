@@ -26,7 +26,7 @@ Package=$(basename ${1?"Usage: $0 ./PACKAGE"})
 
 Directory=./nix/project
 
-Filename="${Directory}"/"${Package}".nix
+Filepath="${Directory}"/"${Package}".nix
 
 ##################################################
 
@@ -34,11 +34,11 @@ mkdir -p "${Directory}"
 
 echo
 
-cabal2nix ${Location} > "${Filename}"
+cabal2nix ${Location} > "${Filepath}"
 
 echo
 
-cat "${Filename}"
+cat "${Filepath}"
 
 echo
 

@@ -24,8 +24,10 @@ let
 
   y = pkgs.haskell.lib.addBuildTools x exes;
 
-  z = if pkgs.lib.inNixShell then y.env else y;
+  z = pkgs.haskell.lib.addExtraLibraries y libs;
+
+  e = if pkgs.lib.inNixShell then z.env else z;
 
 in
 
-  z
+  e

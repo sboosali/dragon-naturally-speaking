@@ -3,22 +3,7 @@ set -e
 shopt -s extglob
 ##################################################
 
-# e.g. a URL.
-#
-#   $ ./scripts/packages/cabal2nix.sh "https://github.com/bjpop/language-python"
-#
-
-# e.g. a (local) Filepath.
-#
-# Absolute Path:
-#
-#   $ ./scripts/packages/cabal2nix.sh ../spiros
-#
-# Relative Path:
-#
-#   $ cd ./scripts/packages/
-#   $ ./cabal2nix.sh ../../../spiros
-#
+# 
 
 ##################################################
 
@@ -26,7 +11,7 @@ Location=${1?"Usage: $0 URI (e.g. https://github.com/REPOSITORY/PACKAGE)"}
 
 ##################################################
 
-Directory=./nix/packages
+Directory=./.
 
 Package=$(basename "${Location}" | cut -d. -f1)
 

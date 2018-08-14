@@ -26,7 +26,7 @@ Location=${1?"Usage: $0 URI (e.g. https://github.com/REPOSITORY/PACKAGE)"}
 
 ##################################################
 
-Directory=./nix/packages
+Directory=./.
 
 Package=$(basename "${Location}" | cut -d. -f1)
 
