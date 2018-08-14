@@ -1,0 +1,39 @@
+--------------------------------------------------
+packages:
+
+ ./natlink/
+
+----------------------------------------
+optional-packages:
+
+ ../spiros
+ 
+ -- ../enumerate/enumerate
+ -- ../enumerate/enumerate-function
+
+--------------------------------------------------
+
+haddock-hyperlink-source: True
+
+jobs: $ncpus
+
+--------------------------------------------------
+
+profiling:     True
+
+documentation: True
+
+optimization:  0
+
+--------------------------------------------------
+
+extra-lib-dirs: /home/sboo/.nix-profile/lib/
+
+--------------------------------------------------
+
+-- package wai
+--   extra-lib-dirs: /home/sboo/.nix-profile/lib/
+
+----------------------------------------
+-- http://cabal.readthedocs.io/en/latest/nix-local-build.html
+----------------------------------------
