@@ -12,10 +12,14 @@ manualOverrides = self: super:
     mkDerivation = drv:
       super.mkDerivation (drv //
         {
-          #TODO[parametrize] jailbreak   = true; 
+          #TODO[parametrize] jailbreak   = true;
+          
           doHaddock   = true;
           doCheck     = false;
           doBenchmark = false;
+          
+          enableLibraryProfiling = true;
+          
         });
   };
 
