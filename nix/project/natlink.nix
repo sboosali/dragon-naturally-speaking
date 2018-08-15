@@ -7,7 +7,7 @@
 mkDerivation {
   pname = "natlink";
   version = "0.0.0";
-  src = ./natlink;
+  src = ../../natlink;
   libraryHaskellDepends = [
     aeson ansi-wl-pprint base bifunctors bytestring containers deepseq
     directory enumerate exceptions generic-lens hashable lens mtl

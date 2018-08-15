@@ -55,18 +55,8 @@ extra-source-files:
 
 source-repository head
   type:     git
-  location: git://github.com/sboosali/dictation.git
-  -- subdir: natlink
-
--- source-repository this
---   type:     git
---   location: https://github.com/sboosali/dictation/tree/v0.1.0
--- -- subdir: natlink
--- 
--- -- Update the `source-repository` for `this` package version on every release
--- -- (i.e. every hackage upload or metadata revision).  
--- -- Assuming you've created a git tag with that version, 
--- -- (e.g. `git tag -a v0.1.0 -m "Hackage Release of Version 0.1.0" && git push origin v0.1.0`). 
+  location: git://github.com/sboosali/natlink.git
+  subdir:   natlink
 
 ----------------------------------------
 -- FLAGS
