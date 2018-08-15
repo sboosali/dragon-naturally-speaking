@@ -1,0 +1,375 @@
+cabal-version:       2.2
+                     -- for indefinite-modules and "common stanzas".
+
+----------------------------------------
+
+name:                natlink-http
+version:             0.0.0
+
+----------------------------------------
+
+synopsis:
+        Dragon NaturallySpeaking on Linux
+
+description:
+            A server that "forwards" speech recognitions from Dragon NaturallySpeaking,
+            which is running in a Windows virtual-machine (e.g. via @VirtualBox@).
+            The client is a @Natlink@ script that sends (simple) @HTTP@/@JSON@ requests.
+            The server receives and parses each speech recognition, executing them on any @X11@
+            system, by either: inserting the text literally; or performing various "automation"
+            actions like simulating keyboard shortcuts and mouse clicks, accessing the clipboard,
+            manipulating windows and workspaces, and so on.
+
+category: Accessibility, Automation, Dictation, Speech Recognition, Voice Control
+
+----------------------------------------
+
+build-type:          Simple
+homepage:            http://github.com/sboosali/dictation#readme
+bug-reports:         http://github.com/sboosali/dictation/issues
+author:              Spiros Boosalis
+maintainer:          Spiros Boosalis <samboosalis@gmail.com>
+copyright:           2018 Spiros Boosalis
+license:             GPL-3.0-or-later
+license-file:        LICENSE.txt
+stability:           experimental
+tested-with:
+  -- GHC == 7.10.3
+  -- GHC == 8.0.2
+  -- GHC == 8.2.2
+     GHC == 8.4.3
+  -- GHC == 8.6.1
+
+----------------------------------------
+
+extra-source-files:
+  README.md
+  NOTES.md
+  -- stack.yaml
+  -- LICENSE.txt ???
+
+-- data-files:
+--   data/
+
+----------------------------------------
+
+source-repository head
+  type:     git
+  location: git://github.com/sboosali/natlink.git
+  subdir:   natlink-http
+
+----------------------------------------
+-- FLAGS
+
+-- flag ...
+--   default:     False
+--   description: Enable ...
+--   manual:      True
+
+----------------------------------------
+-- COMMON_STANZAS
+----------------------------------------
+common haskell2020
+
+ build-depends:
+  base >=4.8 && <5.0
+  -- ^ all components must agree on `base`.
+  -- by sharing this `build-depends` fragment,
+  -- across components, via this `common` stanza,
+  -- we both guarantee it and make it more convenience.
+
+ default-language:
+   Haskell2010
+
+ ------------------------------
+ ------------------------------
+ ghc-options:
+
+  --------------------
+  -- warning groups
+  --------------------
+
+  -Wall
+
+  --------------------
+  -- disabled warnings
+  --------------------
+
+  -Wno-unticked-promoted-constructors
+
+  --------------------
+  -- enabled warnings
+  --------------------
+
+  -- enable
+  -Wincomplete-uni-patterns
+  -Wincomplete-record-updates
+  -Widentities
+  -Wmissing-methods
+  -fwarn-tabs
+ 
+  --------------------
+  -- typed-holes
+  --------------------
+
+  -- use `typed-holes`, not `undefined`, during development
+
+  -fdefer-typed-holes
+  -Wtyped-holes
+
+  --------------------
+  -- (miscellaneous warnings)
+  --------------------
+
+  -- raise a warning into an error
+  -- -Werror=missing-fields
+
+ if impl(ghc >= 8.0)
+    ghc-options:
+
+        --------------------
+        -- warning groups
+        --------------------     
+
+        -Wcompat
+      
+        --------------------
+        -- enabled warnings
+        --------------------
+
+        -Wnoncanonical-monad-instances
+        -Wnoncanonical-monadfail-instances
+
+ ------------------------------
+ ------------------------------
+
+ default-extensions:
+
+   --------------------
+   -- "controversial"
+   --------------------
+   NoImplicitPrelude
+
+   --------------------
+   -- `deriving`
+   --------------------
+   AutoDeriveTypeable
+   DeriveDataTypeable
+   DeriveGeneric
+   DeriveFunctor
+   DeriveFoldable
+   DeriveTraversable
+   DeriveLift
+   StandaloneDeriving
+
+   DerivingStrategies
+   DeriveAnyClass
+   GeneralizedNewtypeDeriving
+
+   --------------------
+   -- syntax
+   --------------------
+   PackageImports
+   LambdaCase
+   EmptyCase
+   TypeOperators
+   PostfixOperators
+   BangPatterns
+   KindSignatures
+   NamedFieldPuns
+   RecordWildCards
+   TupleSections
+   MultiWayIf
+   DoAndIfThenElse
+   EmptyDataDecls
+   InstanceSigs
+   
+   --------------------
+   -- typeclasses
+   --------------------
+   MultiParamTypeClasses
+   FlexibleContexts
+   FlexibleInstances
+   TypeFamilies
+   FunctionalDependencies
+
+   --------------------
+   -- patterns
+   --------------------
+   ViewPatterns
+   PatternSynonyms
+
+   --------------------
+   -- (miscellaneous)
+   --------------------
+   ScopedTypeVariables
+
+ other-extensions:
+
+   --------------------
+   -- macros
+   --------------------
+   TemplateHaskell
+   -- QuasiQuotes
+
+   --------------------
+   -- syntax (of literals)
+   --------------------
+   OverloadedStrings
+   OverloadedLists
+
+   --------------------
+   -- (miscellaneous)
+   --------------------
+
+   -- RebindableSyntax
+   -- kinds:
+   -- DataKinds ConstraintKinds
+   -- harmful to inference:
+   -- GADTs RankNTypes
+   -- (miscellaneous)
+
+---------------------------------------
+-- LIBRARY
+----------------------------------------
+
+library
+
+ import: haskell2020
+
+ hs-source-dirs:
+   sources
+
+ exposed-modules:
+
+   Natlink.HTTP
+   Natlink.HTTP.Types
+   Natlink.HTTP.API
+   Natlink.HTTP.Server
+
+ other-modules:
+
+   Prelude_natlink_http
+   -- Paths_natlink_http
+
+ -- autogen-modules:
+   -- Paths_natlink_http
+
+ build-depends:
+
+  --------------------
+  -- my packages
+  -- (sboosali on github, sboo on hackage)
+  --------------------
+
+    spiros    >=0.2
+  , enumerate >=0.2 
+
+ --------------------
+ -- boot libraries / "standard" library
+ --------------------
+
+  , text 
+  , bytestring
+
+  , transformers
+  , mtl
+
+  , containers
+
+  --------------------
+  -- "extended" standard library 
+  --------------------
+
+  , deepseq
+
+  , hashable
+  , unordered-containers
+
+  , exceptions
+
+  --------------------
+  -- ekmett 
+  --------------------
+
+  , bifunctors
+  , profunctors
+  , reducers
+
+  --------------------
+  -- `servant` packages
+  --------------------
+
+  , servant
+  , servant-server
+  , servant-foreign
+
+  --------------------
+  -- Web packages
+  --------------------
+
+  , warp
+
+  , http-client
+
+  , aeson
+  , lens-aeson
+
+  --------------------
+  -- Database / Filesystem packages
+  --------------------
+
+  , directory
+  
+  --------------------
+  -- Concurrency packages
+  --------------------
+
+  , async
+  , parallel
+
+  --------------------
+  -- Parsing / Formatting packages
+  --------------------
+
+  , ansi-wl-pprint
+             
+  --------------------
+  -- Python-related packages
+  --------------------
+
+--  , language-python
+    -- (^ not on Stackage.)
+
+   --------------------
+   -- records libraries.
+   --------------------
+  , lens
+  , generic-lens
+  , vinyl
+
+  --------------------
+  -- (miscellaneous packages)
+  --------------------
+
+  , time
+
+  --------------------
+
+---------------------------------------
+-- EXECUTABLES
+----------------------------------------
+
+executable natlink-http-example
+ import: haskell2020
+
+ ghc-options:
+             -Wno-missing-signatures
+ 
+ main-is:        Example.hs
+ hs-source-dirs: executables
+ 
+ build-depends:
+               natlink-http
+
+----------------------------------------

@@ -1,14 +1,17 @@
 ##################################################
 ##################################################
-all: build
+default: compile
 
 ####################
-.PHONY:	all check configure build clean docs update rebuild
+all: compile docs release tags
+
+####################
+.PHONY: default all configure check compile clean tags docs release update
 
 ##################################################
 ##################################################
 configure:
-	cabal --enable-nix new-configure --project-file ./cabal.project
+	nix-shell --run 'cabal new-configure --project-file ./cabal.project'
 
 ####################
 check:
@@ -16,7 +19,7 @@ check:
 
 ####################
 compile:
-	cabal --enable-nix new-build all
+	nix-shell --run 'cabal --enable-nix new-build all'
 
 ####################
 repl:
