@@ -2,7 +2,13 @@
 
 Utilities, and web-based bindings, for Dragon NaturallySpeaking and Natlink.
 
-## `dragon-naturally-speaking` (the project)
+## the `dragon-naturally-speaking` project
 
-## `natlink` (a package)
+## the `natlink` package
+
+## the `natlink-http` package  ##
+
+``` haskell
+run "hello world"
+```
 

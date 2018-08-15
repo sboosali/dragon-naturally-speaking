@@ -18,10 +18,6 @@ check:
 	cabal --enable-nix new-build -fno-code -O0 all
 
 ####################
-compile:
-	nix-shell --run 'cabal --enable-nix new-build all'
-
-####################
 repl:
 	cabal --enable-nix new-repl natlink
 
@@ -37,6 +33,25 @@ execute:
 clean:
 	rm -rf dist/ dist-newstyle/ .sboo/
 	rm -f *.project.local .ghc.environment.*
+
+##################################################
+##################################################
+
+####################
+compile: nix-compile
+
+####################
+nix-compile:
+	nix-shell --run 'cabal new-build all'
+
+####################
+cabal-compile:
+	cabal new-build all
+
+# ####################
+# stack-compile:
+# 	stack build
+#
 
 ##################################################
 ##################################################
