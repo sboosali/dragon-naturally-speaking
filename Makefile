@@ -36,6 +36,20 @@ clean:
 
 ##################################################
 ##################################################
+# Project Packages (and/or Cabal Components)
+
+####################
+natlink:
+	cabal new-build natlink
+	cabal new-test  natlink
+
+####################
+natlink-http:
+	cabal new-build natlink-http
+	cabal new-run   natlink-http-start
+
+##################################################
+##################################################
 
 ####################
 compile: nix-compile
@@ -80,7 +94,7 @@ build-docs: compile
 copy-docs: build-docs
 	rm -fr ".sboo/documentation/"
 	mkdir -p ".sboo/documentation/"
-	cp -aRv  ./dist-newstyle/build/*-*/ghc-*/natlink-*/noopt/doc/html/natlink/* ".sboo/documentation/"
+	cp -aRv  ./dist-newstyle/build/*-*/ghc-*/natlink-*/noopt/doc/html/natlink ".sboo/documentation/natlink"
 
 ########################
 open-docs:

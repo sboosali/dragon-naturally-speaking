@@ -242,11 +242,39 @@ library
 
  -------------------------
  exposed-modules:
+                 Natlink
+                 Natlink.Types
 
-   Natlink
-   Natlink.Types
-   Natlink.Mode.Types 
+                 Natlink.Audio
+                 Natlink.Audio.Types
+                 
+                 Natlink.Correction
+                 Natlink.Correction.Types
+                 
+                 Natlink.DragonScript
+                 Natlink.DragonScript.Types
+                 
+                 Natlink.Grammar
+                 Natlink.Grammar.Types
+                 
+                 Natlink.Hypotheses
+                 Natlink.Hypotheses.Types
+                 
+                 Natlink.Microphone
+                 Natlink.Microphone.Types
+                 
+                 Natlink.Mode
+                 Natlink.Mode.Types
 
+                 Natlink.Python
+                 Natlink.Python.Types
+                 
+                 Natlink.Recognition
+                 Natlink.Recognition.Types
+                 
+                 Natlink.Term
+                 Natlink.Term.Types
+                 
  -------------------------
  other-modules:
 
@@ -351,21 +379,21 @@ library
 -- TESTS
 ----------------------------------------
 
-test-suite unit
- import: haskell2020
+-- test-suite unit
+--  import: haskell2020
 
- hs-source-dirs:      tests
- main-is:             UnitTests.hs
- type:                exitcode-stdio-1.0
+--  hs-source-dirs:      tests
+--  main-is:             UnitTests.hs
+--  type:                exitcode-stdio-1.0
 
- other-modules:
-  Test.Natlink
+--  other-modules:
+--   Test.Natlink
 
- build-depends:
-    natlink
-  , hspec
-  , hedgehog
-  -- , tasty
-  -- , tasty-quickcheck
+--  build-depends:
+--     natlink
+--   , hspec
+--   , hedgehog
+--   -- , tasty
+--   -- , tasty-quickcheck
 
 ----------------------------------------

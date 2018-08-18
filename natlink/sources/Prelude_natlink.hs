@@ -10,6 +10,10 @@ import "spiros" Prelude.Spiros as X hiding (Text)
 
 ----------------------------------------
 
+import "enumerate" Enumerate as X
+ 
+----------------------------------------
+
 import "text" Data.Text as X (Text)
 
 ----------------------------------------

@@ -1,4 +1,8 @@
-{-# LANGUAGE GADTs, PatternSynonyms, OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE GADTs, PatternSynonyms #-}
+
+--------------------------------------------------
+--------------------------------------------------
 
 {-| The speech engine API, as exposed by
 <https://github.com/sboosali/NatLink/blob/master/NatlinkSource/natlink.txt#L106 Natlink>
@@ -20,9 +24,38 @@ ADVANCED FORMATTING
 NatSpeak’s VDct uses a chart parser to format dates, time, numbers, currency, etc.
 "one hundred dollars and two cents" -> $100.02
 
-
 -}
-module Natlink.Types where
+
+module Natlink.Types
+  ( module Natlink.Types
+  , module Natlink.Audio.Types
+  , module Natlink.Correction.Types
+  , module Natlink.DragonScript.Types
+  , module Natlink.Grammar.Types
+  , module Natlink.Hypotheses.Types
+  , module Natlink.Microphone.Types
+  , module Natlink.Mode.Types
+  , module Natlink.Python.Types
+  , module Natlink.Recognition.Types
+  , module Natlink.Term.Types
+  ) where
+
+--------------------------------------------------
+--------------------------------------------------
+
+import Natlink.Audio.Types
+import Natlink.Correction.Types
+import Natlink.DragonScript.Types
+import Natlink.Grammar.Types
+import Natlink.Hypotheses.Types
+import Natlink.Microphone.Types
+import Natlink.Mode.Types
+import Natlink.Python.Types
+import Natlink.Recognition.Types
+import Natlink.Term.Types
+
+--------------------------------------------------
+--------------------------------------------------
 
 {-
 import           Data.Aeson (ToJSON,FromJSON) --TODO rm
@@ -39,139 +72,7 @@ import Prelude_natlink
 -}
 newtype DNSBuffer = DNSBuffer String
 
-{-|
 
--}
-newtype Recognition = Recognition [Word]
- deriving (Show,Read,Eq,Ord,Generic,Data,NFData,Hashable,ToJSON,FromJSON,Semigroup,Monoid)
-
-{-| the "leaves" of the grammar.
-
-Returned by Dragon NaturallySpeaking when an utterance is recognized.
-
-given @DNSPronounced written spoken@, the speech recognition engine
-recognizes @spoken@ and transcribes it as @written@.
-
-e.g.
-
-@
-Word
- { dnsPronounced="a"
- , dnsWritten="A"
- , dnsCategory="letter"
- }
-@
-
--}
-data Word = Word
- { _dnsPronounced :: Text
- , _dnsCategory   :: Maybe DnsCategory 
- , _dnsWritten    :: Maybe Text
- }
- deriving (Show,Read,Eq,Ord,Data,Generic)
-instance NFData   Word
-instance Hashable Word
-instance ToJSON   Word
-instance FromJSON Word
-
-toWord :: Text -> Maybe Word --TODO
-toWord s = case ts of 
- [p] -> Just$ Word p Nothing Nothing -- NOTE the default and most frequent 
- [p,c] -> Just$ Word p (Just c) Nothing 
- [p,c, w] -> Just$ Word p (Just c) (Just w)  
- _  ->  Nothing 
- where
- ts = T.splitOn "\\" s 
-
-validWord :: Text -> Maybe Text --TODO
-validWord s = Just s
-
-{-| the "leaves" of the grammar.
-
-Provided to Dragon NaturallySpeaking in the grammar that is loaded.
-
-Validated by 'validateDNSWord'
-
--}
-data DNSWord = DNSWord Text
-
-validateDNSWord :: Text -> Maybe DNSWord
-validateDNSWord s = s & (DNSWord > Just) --TODO
-
--- data DnsCategory = DnsCategory Text -- TODO 
-type  DnsCategory =Text -- TODO 
-
---------------------------------------------------------------------------------
-
-{-|
--}
-pattern MAXIMUM_ALTERNATIVE_RECOGNITIONS :: Natural
-pattern MAXIMUM_ALTERNATIVE_RECOGNITIONS = 10
-
-
-{-|
-
--}
-data MicrophoneState
- = MicrophoneOn
- | MicrophoneAsleep
- | MicrophoneOff
- deriving (Show,Read,Eq,Ord,Enum,Bounded,Data,Generic)
-instance NFData   MicrophoneState
-instance Hashable MicrophoneState
-instance ToJSON   MicrophoneState
-instance FromJSON MicrophoneState
-
-newtype PythonExpression = PythonExpression { getPythonExpression :: String }
-
-newtype DragonScriptExpression = DragonScriptExpression { getDragonScriptExpression :: String }
-
-{-|
-
-Audio data in wave format. 
-
-11.025Khz, 16 bit, mono (11.025 * 4000 = 441000). 
-
-from natlink's @resObj.getWave()@. 
-
--}
-data Utterance = Utterance
-  { _utteranceData :: () --TODO
-  }
-
-{-|
-
-Training can fail of the transcription is not close enough to the utterance.
-
--}
-data CorrectionStatus = CorrectionSuccess | CorrectionHeterophonic | CorrectionInvalidWord
- deriving (Show,Read,Eq,Ord,Enum,Bounded,Data,Generic)
-instance NFData   CorrectionStatus
-instance Hashable CorrectionStatus
-instance ToJSON   CorrectionStatus
-instance FromJSON CorrectionStatus
-
--- | True is "good", False is "bad"
-booleanCorrectionStatus :: CorrectionStatus -> Bool
-booleanCorrectionStatus = \case
-  CorrectionSuccess      -> True
-  CorrectionHeterophonic -> False
-  CorrectionInvalidWord  -> False
-
-{-|
-
-        Can raise InvalidWord if the grammar contains an invalid word.
-        Can raise BadGrammar if the grammar has syntax errors, or if it's is too complex
-
--}
-data GrammarLoadStatus = GrammarLoadSuccess | GrammarLoadBadGrammar | GrammarLoadInvalidWord
-
--- | True is "good", False is "bad"
-booleanGrammarLoadStatus :: GrammarLoadStatus -> Bool
-booleanGrammarLoadStatus = \case
-  GrammarLoadSuccess      -> True
-  GrammarLoadBadGrammar   -> False
-  GrammarLoadInvalidWord  -> False
 
 --------------------------------------------------------------------------------
 
@@ -206,71 +107,6 @@ unsafeSelectionResultsObject :: ForeignIdentifier -> SelectionResultsObject
 unsafeSelectionResultsObject = SelectionResultsObject_
 
 --------------------------------------------------------------------------------
-
-{-| Initialization/configuration properties shared by all grammars.
-
--}
-data GrammarProperties = GrammarProperties
-  { _grammarStatus            :: Status
-  , _grammarExclusivity       :: Exclusivity
-  , _grammarShouldEavesdrop   :: ShouldEavesdrop
-  , _grammarShouldHypothesize :: ShouldHypothesize
---  , grammar ::
-  }  deriving (Show,Read,Eq,Ord,Data,Generic)
-
-{-|
-
--}
-defaultGrammarProperties :: GrammarProperties
-defaultGrammarProperties = primaryGrammarProperties
-
-primaryGrammarProperties :: GrammarProperties
-primaryGrammarProperties = GrammarProperties{..}
- where
- _grammarStatus = Enabled
- _grammarExclusivity = Inclusive
- _grammarShouldEavesdrop = YesEavesdrop
- _grammarShouldHypothesize = YesHypothesize
-
-{-|
-
--}
-narcissisticGrammarProperties :: GrammarProperties
-narcissisticGrammarProperties = GrammarProperties{..}
- where
- _grammarStatus = Enabled
- _grammarExclusivity = Exclusive
- _grammarShouldEavesdrop = YesEavesdrop
- _grammarShouldHypothesize = YesHypothesize
- -- grammar =
-
-{-|
-
--}
-fastGrammarProperties :: GrammarProperties
-fastGrammarProperties = GrammarProperties{..}
- where
- _grammarStatus = Enabled
- _grammarExclusivity = Inclusive
- _grammarShouldEavesdrop = NoEavesdrop
- _grammarShouldHypothesize = NoHypothesize
- -- grammar =
-
--- | 'Bool'-like. (A grammar can be loaded but disabled.)
-data Status = Enabled | Disabled
- deriving (Show,Read,Eq,Ord,Bounded,Enum,Data,Generic) -- TODO Monoid All?
-
--- | 'Bool'-like. Whether the grammar is exclusive, i.e. it disables all other grammars.
-data Exclusivity = Inclusive | Exclusive -- TODO Monoid Any?
- deriving (Show,Read,Eq,Ord,Enum,Bounded,Data,Generic)
-
--- | 'Bool'-like. Should the grammar listen to other grammars' recognitions' callbacks.
-data ShouldEavesdrop = YesEavesdrop | NoEavesdrop
- deriving (Show,Read,Eq,Ord,Enum,Bounded,Data,Generic)
-
--- | 'Bool'-like. Should the grammar listen to each hypothesis's callback.
-data ShouldHypothesize = YesHypothesize | NoHypothesize
- deriving (Show,Read,Eq,Ord,Enum,Bounded,Data,Generic)
 
 --------------------------------------------------------------------------------
 

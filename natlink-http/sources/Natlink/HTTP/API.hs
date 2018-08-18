@@ -17,6 +17,8 @@ import Prelude_natlink_http
 
 --------------------------------------------------
 
+import Natlink.HTTP.Types
+
 --------------------------------------------------
 
 import qualified "servant-server" Servant     as S
@@ -50,8 +52,6 @@ import "base" GHC.TypeLits (Symbol)
 
 --------------------------------------------------
 --------------------------------------------------
-
-{-
 
 {- | All the APIs.
 
@@ -325,5 +325,3 @@ type GetAPI (s :: Symbol) (q :: Symbol) (a :: *) (b :: *)
 --
 
 --------------------------------------------------
-
--}

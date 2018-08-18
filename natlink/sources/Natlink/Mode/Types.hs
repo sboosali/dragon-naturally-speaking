@@ -26,6 +26,8 @@ import "aeson" Data.Aeson
 
 <http://www.nuance.com/naturallyspeaking/customer-portal/documentation/userguide/chapter7/ug_chapter7_switch_recognition_mode.asp>
 
+The letters of 'SpellMode' are pronounced as <https://en.wikipedia.org/wiki/International_Phonetic_Alphabet IPA (International Phonetic Alphabet)>.
+
 -}
 data Mode
 
@@ -33,7 +35,7 @@ data Mode
  | DictationMode                 -- ^ Just Dictation.
  | CommandMode                   -- ^ Just Commands.
  | NumbersMode                   -- ^ Like Dictation, but only Numbers.
- | SpellMode                     -- ^ Like Dictation, but only IPA Phonetic Alphabet.
+ | SpellMode                     -- ^ Like Dictation, but only Letters.
 
   deriving stock    (Enum,Bounded,Ix)
   deriving stock    (Show,Read,Eq,Ord,Lift,Generic)
