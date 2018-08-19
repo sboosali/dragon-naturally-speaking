@@ -1,10 +1,23 @@
 # -*- coding: utf-8 -*-
 ##################################################
+# notes
+# =====
 #
-# the name of this file is prefixed with an underscore, because:
+# this is an example (natlink-)plugin, with a simple grammar.
+# 
+# the name of this file is prefixed with an underscore;
 # this tells Dragon that the grammar is "global"
 # (i.e. active in all windows).
+#
 # 
+##################################################
+# (sboo-project modules)
+
+#TODO
+# import .sboo.grammar
+# import .sboo.api
+# import .sboo.utilities
+
 ##################################################
 # (natlink13 modules)
 
