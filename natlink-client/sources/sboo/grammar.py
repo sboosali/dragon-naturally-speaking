@@ -19,7 +19,7 @@ from   collections import (namedtuple)
 
 Properties = namedtuple('Properties',
 
-                        [ 'status',                # :: Bool
+                        [ 'active',                # :: Bool
                                                    #
                                                    # =  Off | On
                                                    #
@@ -32,7 +32,7 @@ Properties = namedtuple('Properties',
                           'shouldEavesdrop',       # :: Bool
                                                    #
                                                    # if `exclusivity` is Inclusive (i.e. `False`), then `shouldEavesdrop` being `True` means:
-                                                   # call the `gotResultsObject()` methods of other grammars which are active (i.e. their `status` is `On`).
+                                                   # call the `gotResultsObject()` methods of other grammars which are active (i.e. their `active` is `On`).
                                                    #
                           
                           'shouldHypothesize',     # :: Bool
@@ -53,7 +53,17 @@ Properties = namedtuple('Properties',
 
 Grammar = namedtuple('Grammar',
 
-                     [ 'rules',     # :: String
+                     [ 'exports',   # :: [ String ]
+                                    #
+                                    # a list of **rule-names**.
+                                    # e.g. the string 'emacs' is a valid rule-name if, and only if,
+                                    # `rules` has a line like this:
+                                    # 
+                                    #      '''exported <emacs> = ...;''',
+                                    # 
+                                    # 
+                       
+                       'rules',     # :: String
                                     #
                                     # a **grammar-specification** string.
                                     # its format is a variant of (extended) BNF.
@@ -64,29 +74,26 @@ Grammar = namedtuple('Grammar',
                                     # 
                                     # 
                        
-                       'exports',   # :: [ String ]
-                                    #
-                                    # a list of **rule-names**.
-                                    # e.g. the string 'emacs' is a valid rule-name if, and only if,
-                                    # `rules` has a line like this:
-                                    # 
-                                    #      '''exported <emacs> = ...;''',
-                                    # 
-                                    # 
-                       
                        'lists',     # :: { String: [String] }
                                     #
                                     # a `dict` mapping **list-names** to a list of words.
                                     # e.g.
                                     # 
-                                    #    { 'action': ['cut','copy','paste','undo'], ... } 
+                                    #    { 'action': ['cut','copy','paste','undo'],
+                                    #      'button': ['left','middle','right'],
+                                    #      ...
+                                    #    } 
+                                    # 
+                                    # a valid list-name is referenced somewhere within `rules` references a **list-production**;
+                                    # and vice versa, `rules` is valid if (among other invariants) each referenced list-production
+                                    # is a key of `lists`.
+                                    # 
+                                    # e.g. for 'button', `rules` could have `{button}` within some right-hand-side, like so:
+                                    # 
+                                    #     '''<click> = (single | double | triple)? {button}'''
                                     # 
                                     # 
                        
-                       'properties' # :: Properties
-                                    #
-                                    # (the `Properties` namedtuple defined above)
-                                    # 
                      ],
                      
                      verbose=True)
@@ -94,7 +101,7 @@ Grammar = namedtuple('Grammar',
 ##################################################
 
 defaultProperties = Properties
-                        ( status                 = True, # i.e. On.
+                        ( active                 = True, # i.e. On.
                           exclusivity            = True, # i.e. Exclusive.
                           shouldEavesdrop        = True, # i.e. do eavesdrop other grammars.
                           shouldHypothesize      = True, # i.e. do handle all hypotheses.
@@ -114,7 +121,7 @@ def get_results(resultsObject):
 ##################################################
 
 class NarcissisticGrammar(GrammarBase):
-    ''' 'Narcissistic' because:
+    ''' this Grammar is 'Narcissistic' because:
 
     * load(.., allResults=1)     means: every recognition triggers gotResultsObject
     * load(.., hypothesis=1)     means: every hypothesis, before the recognition, triggers gotHypothesis
@@ -127,51 +134,62 @@ class NarcissisticGrammar(GrammarBase):
     '''
 
     ##############################
-
-    gramSpec = microphone_rule + H_RULES
-
-    ##############################
     
-    def initialize(self):
-        self.set_rules(self.gramSpec, [microphone_export, H_EXPORT])
-        self.set_lists(H_LISTS)
-        self.doOnlyGotResultsObject = True  # aborts all processing after calling gotResultsObject
+    def initialize(self, grammar, properties = defaultProperties):
+        ''' 
+
+        properties :: Properties
+        grammar    :: Grammar
+
+        '''
+        
+        self.set_rules(grammar.rules, grammar.exports, properties)
+
+        self.set_lists(grammar.lists)
+
+        self.doOnlyGotResultsObject = properties.doOnlyGotResultsObject  # aborts all further processing after calling gotResultsObject
 
     ##############################
-        
+
 #     def configure(self, allResults=True , hypothesis=True , doOnlyGotResultsObject=True):
 #        self.load(self.gramSpec, allResults=int(allResults), hypothesis=int(hypothesis))
 #        self.doOnlyGotResultsObject = doOnlyGotResultsObject
-
-    # TODO    must it reload the grammar?
 
     ##############################
 
     # TODO    should include export for safety?
     
-    def set_rules(self, rules, exports):
-        self.gramSpec = rules
-        self.load(rules, allResults=H_PROPERTIES.shouldEavesdrop, hypothesis=H_PROPERTIES.shouldHypothesize)
-        self.set_exports(exports)
+    def set_rules(self, rules, exports, properties):
+        
+        self.gramSpec = rules #TODO necessary?
+        
+        self.load(rules, allResults = properties.shouldEavesdrop, hypothesis = properties.shouldHypothesize)
+
+        self.set_exports(exports, properties)
 
     ##############################
         
+    def set_exports(self, exports, properties):
+
+        if properties.active:
+            pass # TODO guard the below?
+
+        self.activateSet( exports, exclusive = properties.exclusivity )
+
     # activateSet is idempotent, unlike activate
         
-    def set_exports(self, exports):
-        self.activateSet(exports, exclusive=H_PROPERTIES.exclusivity )
+    # TODO must it reload the grammar too?
 
     ##############################
-        
-    # TODO must it reload the grammar?
 
     def set_lists(self, lists):
+
         for (lhs, rhs) in lists.items():
             self.setList(lhs, rhs)
 
     ##############################
     
-    # called when speech is detected,  before recognition begins.
+    # called when speech is detected, before recognition begins.
     
     def gotBegin(self, moduleInfo):
         # handleDGNContextResponse(timeit("/context", urlopen, ("%s/context" % server_address), timeout=0.1))
