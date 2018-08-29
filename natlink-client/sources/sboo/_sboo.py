@@ -21,10 +21,9 @@
 ##################################################
 # (natlink13 modules)
 
-from natlinkmain import (setCheckForGrammarChanges)
-
+from   natlinkmain import (setCheckForGrammarChanges)
 import natlink
-# ^ (a DLL)
+       # ^ (a DLL)
 
 ##################################################
 # (standard-library modules)
@@ -33,7 +32,7 @@ import time
 import json
 import urllib2
 import traceback
-from collections import (namedtuple)
+from   collections import (namedtuple)
 
 ##################################################
 # The User's Grammar
