@@ -15,6 +15,7 @@ build:
 install:
 	nix-env -i -A nixpkgs.python27
 	nix-env -i -A nixpkgs.python27.pkgs.requests
+	nix-env -i -A nixpkgs.python27.pkgs.msgpack
 
 #TODO pip install -r requirements.txt
 

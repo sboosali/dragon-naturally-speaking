@@ -39,11 +39,13 @@ extra-prog-path:    /home/sboo/.nix-profile/bin/
 
 --------------------------------------------------
 
-tests:         False
-
-benchmarks:    False
-
+tests:         True
+benchmarks:    True
 documentation: False
+
+-- tests:         False
+-- benchmarks:    False
+-- documentation: False
 
 --------------------------------------------------
 

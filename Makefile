@@ -15,11 +15,11 @@ configure:
 
 ####################
 check:
-	cabal --enable-nix new-build -fno-code -O0 all
+	cabal new-build -fno-code -O0 all
 
 ####################
 repl:
-	cabal --enable-nix new-repl natlink
+	cabal new-repl natlink
 
 # ####################
 # install:
@@ -27,7 +27,7 @@ repl:
 
 ####################
 execute:
-	cabal --enable-nix new-run ...
+	cabal new-run ...
 
 ####################
 clean:
@@ -52,7 +52,11 @@ natlink-http:
 ##################################################
 
 ####################
-compile: nix-compile
+compile: cabal-compile
+
+# compile: nix-compile
+# compile: cabal-compile
+# compile: stack-compile
 
 ####################
 nix-compile:
@@ -62,10 +66,9 @@ nix-compile:
 cabal-compile:
 	cabal new-build all
 
-# ####################
-# stack-compile:
-# 	stack build
-#
+####################
+stack-compile:
+	stack --nix build
 
 ##################################################
 ##################################################

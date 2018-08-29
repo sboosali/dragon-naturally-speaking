@@ -356,20 +356,20 @@ library
 
   --------------------
 
----------------------------------------
+--------------------------------------------------
 -- EXECUTABLES
-----------------------------------------
+--------------------------------------------------
 
--- executable natlink-http-start
---  import: haskell2020
+executable natlink-http-start
+ import: haskell2020
 
---  ghc-options:
---              -Wno-missing-signatures
+ ghc-options:
+             -Wno-missing-signatures
  
---  main-is:        Example.hs
---  hs-source-dirs: executables
+ main-is:        Example.hs
+ hs-source-dirs: executables
  
---  build-depends:
---                natlink-http
+ build-depends:
+               natlink-http
 
-----------------------------------------
+--------------------------------------------------

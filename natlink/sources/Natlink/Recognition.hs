@@ -21,16 +21,20 @@ import Prelude_natlink
 --------------------------------------------------
 --------------------------------------------------
 
-{-| 
+{-|
+
+>>> :set -XOverloadedLists
+>>> recognitionOnlyAsWritten ["a", "recognition"]
+["a", "recognition"]
 
 -}
 
-displayRecognition :: Recognition -> String
-displayRecognition (Recognition terms) =
-  unwords (displayTerm `fmap` terms)
+recognitionOnlyAsWritten :: Recognition -> [String]
+recognitionOnlyAsWritten (Recognition terms) =
+  (go `fmap` terms)
   where
-  displayTerm :: Term -> String
-  displayTerm Term{written} = written
+  go :: Term -> String
+  go Term{written} = written
 
   -- (terms <&> displayTerm)
 
@@ -70,6 +74,21 @@ doesRecognitionHaveMetadata (Recognition terms) =
 {-| 
 
 -}
+
+--------------------------------------------------
+
+{-| 
+
+-}
+
+displayRecognition :: Recognition -> String
+displayRecognition (Recognition terms) =
+  unwords (displayTerm `fmap` terms)
+  where
+  displayTerm :: Term -> String
+  displayTerm Term{written} = written
+
+  -- (terms <&> displayTerm)
 
 --------------------------------------------------
 --------------------------------------------------

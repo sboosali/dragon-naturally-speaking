@@ -379,21 +379,21 @@ library
 -- TESTS
 ----------------------------------------
 
--- test-suite unit
---  import: haskell2020
+test-suite test
+ import: haskell2020
 
---  hs-source-dirs:      tests
---  main-is:             UnitTests.hs
---  type:                exitcode-stdio-1.0
+ hs-source-dirs:      tests
+ main-is:             UnitTests.hs
+ type:                exitcode-stdio-1.0
 
---  other-modules:
---   Test.Natlink
+ other-modules:
+  Test.Natlink
 
---  build-depends:
---     natlink
---   , hspec
---   , hedgehog
---   -- , tasty
---   -- , tasty-quickcheck
+ build-depends:
+    natlink
+  , hspec
+  , hedgehog
+  -- , tasty
+  -- , tasty-quickcheck
 
 ----------------------------------------
