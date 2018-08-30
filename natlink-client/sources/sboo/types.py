@@ -21,6 +21,13 @@ class MicrophoneState(Enum):
 
 ##################################################
 
+class RecognitionType(Enum):
+    SELF   = 0
+    REJECT = 1
+    OTHER  = 2
+
+##################################################
+
 Properties = namedtuple('Properties',
 
                         [ 'active',                # :: Bool

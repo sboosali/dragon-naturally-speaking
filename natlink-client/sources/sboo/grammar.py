@@ -31,6 +31,10 @@ defaultProperties = Properties( active                 = True, # i.e. On.
 
 ##################################################
 
+def first_result(resultsObject):
+
+    return next(get_results(resultsObject), None)
+
 def get_results(resultsObject):
 
     try:
@@ -154,11 +158,7 @@ class NarcissisticGrammar(GrammarBase):
 
         try:
             if should_request(self,data):
-                print 'data  =', json.dumps(data)
-                request  = urllib2.Request(url, json.dumps(data), {"Content-Type": "application/json"})
-                response = urllib2.urlopen(request)
-                handleResponse(self, response) 
-            pass
+                do_request(self,data)
         except Exception as e:
             print
             print "---------- error ------------------"

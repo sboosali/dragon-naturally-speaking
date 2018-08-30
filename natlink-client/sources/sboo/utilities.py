@@ -44,7 +44,4 @@ def toUnicode(data): # TODO
         print traceback.format_exc()
         return False
 
-def first_result(resultsObject):
-    return next(get_results(resultsObject), None)
-
 ##################################################

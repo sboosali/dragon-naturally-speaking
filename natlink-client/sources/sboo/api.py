@@ -15,22 +15,88 @@ import natlink
 ##################################################
 # (standard-library modules)
 
-import time
 import json
 import urllib2
-import traceback
-from   collections import (namedtuple)
 
 ##################################################
 
-# TODO             handleDGNUpdate(grammar, response)
-def handleDGNUpdate(grammar, response):
+json_content_type = {"Content-Type": "application/json"}
+
+##################################################
+
+def post_json(url,data):
+    
+    request  = urllib2.Request(url,
+                               json.dumps(data),
+                               json_content_type)
+    
+    response = urllib2.urlopen(request)
+    return response
+
+##################################################
+
+def recognition(resultsObject):
+
+    data = todo(resultsObject)
+
+    response = post_json("/recognition", resultsObject)
+
     pass
+
+##################################################
+
+##################################################
+
+def hypotheses(resultsObject):
+
+    data = todo(resultsObject)
+
+    response = post_json("/hypotheses", data)
+
+    pass
+
+##################################################
+
+##################################################
+
+def listening():
+
+    response = post_json("/listening", null)
+
+    pass
+
+##################################################
+
+##################################################
+
+def corrected(resultsObject, didCorrectionSucceed):
+
+    data = { result: todo(resultsObject),
+             status: didCorrectionSucceed }
+
+    response = post_json("/corrected", data)
+
+    pass
+
+##################################################
+
+##################################################
+##################################################
+##################################################
+
+def do_request(self,url,data):
+                print 'data  =', json.dumps(data)
+                response = post_json(url, data)
+                handleResponse(self, response)
+
+##################################################
 
 def should_request(grammar,data):
     b = data and not handle_microphone(grammar,data) and isUnicode(data)
     print "should_request=", b
     return b
+
+##################################################
 
 # returns true if it matched the recognition (and executed the magic action).
 # in which case, don't send a request to the server to execute any non-magic actions.
@@ -51,10 +117,5 @@ def handle_microphone(grammar,data):
         return True
     else:
         return False
-
-'''
-''' 
-def handleResponse(grammar, response) : 
-    pass 
 
 ##################################################
