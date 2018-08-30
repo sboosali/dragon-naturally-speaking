@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 ##################################################
+# project (local) modules:
+
+from   types import *
+import api
+
+##################################################
 # natlink13 modules:
 
 from   natlinkutils import (GrammarBase)
@@ -17,115 +23,34 @@ from   collections import (namedtuple)
 
 ##################################################
 
-Properties = namedtuple('Properties',
-
-                        [ 'active',                # :: Bool
-                                                   #
-                                                   # =  Off | On
-                                                   #
-                          
-                          'exclusivity',           # :: Bool
-                                                   #
-                                                   # =  Inclusive | Exclusive
-                                                   #
-                          
-                          'shouldEavesdrop',       # :: Bool
-                                                   #
-                                                   # if `exclusivity` is Inclusive (i.e. `False`), then `shouldEavesdrop` being `True` means:
-                                                   # call the `gotResultsObject()` methods of other grammars which are active (i.e. their `active` is `On`).
-                                                   #
-                          
-                          'shouldHypothesize',     # :: Bool
-                                                   #
-                                                   # Whether `gotHypothesis()` gets called;
-                                                   # i.e. the streaming recognition-hypotheses, not just the recognition.
-                                                   #
-                          
-                          'doOnlyGotResultsObject' # :: Bool
-                                                   #
-                                                   # Whether any methods after `gotResultsObject()` get called (i.e. no `getResults()`).
-                                                   #
-                        ],
-                        
-                        verbose=True)
-
-##################################################
-
-Grammar = namedtuple('Grammar',
-
-                     [ 'exports',   # :: [ String ]
-                                    #
-                                    # a list of **rule-names**.
-                                    # e.g. the string 'emacs' is a valid rule-name if, and only if,
-                                    # `rules` has a line like this:
-                                    # 
-                                    #      '''exported <emacs> = ...;''',
-                                    # 
-                                    # 
-                       
-                       'rules',     # :: String
-                                    #
-                                    # a **grammar-specification** string.
-                                    # its format is a variant of (extended) BNF.
-                                    #
-                                    # for the syntax and meaning of this grammar-format, see:
-                                    # 
-                                    #     TODO
-                                    # 
-                                    # 
-                       
-                       'lists',     # :: { String: [String] }
-                                    #
-                                    # a `dict` mapping **list-names** to a list of words.
-                                    # e.g.
-                                    # 
-                                    #    { 'action': ['cut','copy','paste','undo'],
-                                    #      'button': ['left','middle','right'],
-                                    #      ...
-                                    #    } 
-                                    # 
-                                    # a valid list-name is referenced somewhere within `rules` references a **list-production**;
-                                    # and vice versa, `rules` is valid if (among other invariants) each referenced list-production
-                                    # is a key of `lists`.
-                                    # 
-                                    # e.g. for 'button', `rules` could have `{button}` within some right-hand-side, like so:
-                                    # 
-                                    #     '''<click> = (single | double | triple)? {button}'''
-                                    # 
-                                    # 
-                       
-                     ],
-                     
-                     verbose=True)
-
-##################################################
-
-defaultProperties = Properties
-                        ( active                 = True, # i.e. On.
-                          exclusivity            = True, # i.e. Exclusive.
-                          shouldEavesdrop        = True, # i.e. do eavesdrop other grammars.
-                          shouldHypothesize      = True, # i.e. do handle all hypotheses.
-                          doOnlyGotResultsObject = True) # i.e. do not call `gotResults()`.
+defaultProperties = Properties( active                 = True, # i.e. On.
+                                exclusivity            = True, # i.e. Exclusive.
+                                shouldEavesdrop        = True, # i.e. do eavesdrop other grammars.
+                                shouldHypothesize      = True, # i.e. do handle all hypotheses.
+                                doOnlyGotResultsObject = True) # i.e. do not call `gotResults()`.
 
 ##################################################
 
 def get_results(resultsObject):
+
     try:
-        # "exceptions aren't exceptional" lmfao.
-        # iterators are more idiomatic.
         for number in xrange(10):
             yield resultsObject.getWords(number)
-    except: #TODO natlink.OutOfRange
+
+    except natlink.OutOfRange:
         return
+
+        # "exceptions aren't exceptional" lmfao.
+        # iterators are more idiomatic.
 
 ##################################################
 
 class NarcissisticGrammar(GrammarBase):
     ''' this Grammar is 'Narcissistic' because:
 
-    * load(.., allResults=1)     means: every recognition triggers gotResultsObject
-    * load(.., hypothesis=1)     means: every hypothesis, before the recognition, triggers gotHypothesis
-    * activate(.., exclusive=1)  means: deactivate every other non-exclusive rule
+    * `load(..,     allResults = 1)` means: every recognition triggers gotResultsObject.
+    * `load(..,     hypothesis = 1)` means: every hypothesis, before the recognition, triggers gotHypothesis.
+    * `activate(.., exclusive  = 1)` means: deactivate every other non-exclusive rule.
 
     When both flags are set on load, NarcissisticGrammar.gotResultsObject is called on
     every recognition of every exclusive rule, including of course this class's rules 
@@ -230,7 +155,7 @@ class NarcissisticGrammar(GrammarBase):
         try:
             if should_request(self,data):
                 print 'data  =', json.dumps(data)
-                request  = urllib2.Request(url, json.dumps(data), \{"Content-Type": "application/json"})
+                request  = urllib2.Request(url, json.dumps(data), {"Content-Type": "application/json"})
                 response = urllib2.urlopen(request)
                 handleResponse(self, response) 
             pass
@@ -253,16 +178,6 @@ class NarcissisticGrammar(GrammarBase):
             print "---------- error ------------------"
             print e
             print traceback.format_exc()
-
-    ##############################
-
-    # for debugging only, shows whether specific rules (rather than the generic dgndictation) are matching the recognition
-    # not called when (self.doOnlyGotResultsObject=True)
-
-    def gotResults(self, words, fullResults):
-        print
-        print "---------- gotResultsObject ----------"
-        print "fullResults =", fullResults
 
     ##############################
 

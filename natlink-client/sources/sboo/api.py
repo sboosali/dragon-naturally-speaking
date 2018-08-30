@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 ##################################################
+# project (local) modules:
+
+from   types import *
+import utilities
+
+##################################################
 # (natlink13 modules)
 
-from natlinkmain import (setCheckForGrammarChanges)
-
+from   natlinkmain import (setCheckForGrammarChanges)
 import natlink
 # ^ (a DLL)
 
@@ -14,7 +19,7 @@ import time
 import json
 import urllib2
 import traceback
-from collections import (namedtuple)
+from   collections import (namedtuple)
 
 ##################################################
 
