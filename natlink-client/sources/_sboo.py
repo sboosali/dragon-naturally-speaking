@@ -11,6 +11,12 @@
 #
 # 
 ##################################################
+# (standard-library modules)
+
+#import traceback
+import os
+
+##################################################
 # (project (local) modules)
 
 from   sboo.types   import *
@@ -19,12 +25,15 @@ from   sboo.grammar import *
 ##################################################
 # (natlink13 modules)
 
-from   sboo.natlinkmain import (setCheckForGrammarChanges)
+if os.environ.get('SBOO_NATLINK'):
+    # the environment-variable is set.
+    from sboo.natlinkmain import (setCheckForGrammarChanges)
+    # ^ for testing on the host, import stubbed `natlink` signatures.
 
-##################################################
-# (standard-library modules)
-
-#import traceback
+else:
+    # tyhe environment-variable is unset or set to a falsy value.
+    from      natlinkmain import (setCheckForGrammarChanges)
+    # ^ for running on the guest.
 
 ##################################################
 # The User's Grammar

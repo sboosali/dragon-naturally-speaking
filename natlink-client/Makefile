@@ -19,7 +19,7 @@ build:
 ##################################################
 
 execute:
-	python ./sources/_sboo.py
+	SBOO_NATLINK=1 python ./sources/_sboo.py
 
 .PHONY: execute
 
@@ -32,10 +32,9 @@ execute:
 
 ##################################################
 
-#TODO test:
-#TODO 	py.test tests
+test:
 
-#.PHONY: test
+.PHONY: test
 
 ##################################################
 
