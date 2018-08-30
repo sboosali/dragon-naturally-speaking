@@ -3,7 +3,8 @@
 # notes
 # =====
 #
-# this is an example (natlink-)plugin, with a simple grammar.
+# this is an example (natlink-)plugin
+# of a simple "Command & Control" simple grammar.
 # 
 # the name of this file is prefixed with an underscore;
 # this tells Dragon that the grammar is "global"

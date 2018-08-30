@@ -1,14 +1,22 @@
 ##################################################
 
-default: execute
+SOURCE_DIRECTORY=./sources
+
+COMMANDS_FILE="$(SOURCE_DIRECTORY)/_commands.py"
+SELECTION_FILE="$(SOURCE_DIRECTORY)/_selection.py"
+DICTATION_FILE="$(SOURCE_DIRECTORY)/_dictation.py"
+
+##################################################
+
+default: execute clean
 
 .PHONY: default
 
 ##################################################
 
 build:
-	find sources/ -name '*.py' -exec python -m compileall {} \;
-#	find sources/ -name '*.py' -print0 | xargs -n 1 -0 python -m compileall
+	find "$(SOURCE_DIRECTORY)/" -name '*.py' -exec python -m compileall {} \;
+#	find "$(SOURCE_DIRECTORY)/" -name '*.py' -print0 | xargs -n 1 -0 python -m compileall
 
 .PHONY: build
 
@@ -19,38 +27,40 @@ build:
 ##################################################
 
 execute:
-	SBOO_NATLINK=1 python ./sources/_sboo.py
+	SBOO_NATLINK=1 python $(COMMANDS_FILE)
+#	SBOO_NATLINK=1 python $(SELECTION_FILE)
+#	SBOO_NATLINK=1 python $(DICTATION_FILE)
 
 .PHONY: execute
 
 ##################################################
 
 # run:
-# 	python ./sources/_sboo.py
+# 	python 
 
 # .PHONY: run
 
 ##################################################
 
-test:
+# test:
 
-.PHONY: test
+# .PHONY: test
 
 ##################################################
 
-install:
-	nix-env -i -A nixpkgs.python27
-	nix-env -i -A nixpkgs.python27.pkgs.requests
-	nix-env -i -A nixpkgs.python27.pkgs.msgpack
+# install:
+# 	nix-env -i -A nixpkgs.python27
+# 	nix-env -i -A nixpkgs.python27.pkgs.requests
+# 	nix-env -i -A nixpkgs.python27.pkgs.msgpack
 
-.PHONY: install
+# .PHONY: install
 
-#TODO pip install -r requirements.txt
+# #TODO pip install -r requirements.txt
 
 ##################################################
 
 clean:
-	find sources/ -name '*.pyc' -exec rm {} \;
+	find "$(SOURCE_DIRECTORY)/" -name '*.pyc' -exec rm {} \;
 
 .PHONY: clean
 
@@ -63,7 +73,7 @@ check: build clean execute
 	@echo --------------------------------------------------
 	@echo '[SUCCESS]'
 	@echo 
-	find sources/ -type f -name '*.py'
+	find "$(SOURCE_DIRECTORY)/" -type f -name '*.py'
 	@echo 
 	@echo --------------------------------------------------
 
