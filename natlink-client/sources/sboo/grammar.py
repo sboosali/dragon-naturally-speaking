@@ -2,8 +2,8 @@
 ##################################################
 # project (local) modules:
 
-from   types import *
-import api
+from   .types import *
+from   .api   import *
 
 ##################################################
 # natlink13 modules:

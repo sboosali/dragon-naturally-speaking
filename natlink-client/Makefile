@@ -1,6 +1,6 @@
 ##################################################
 
-default: check
+default: execute
 
 .PHONY: default
 
@@ -18,10 +18,17 @@ build:
 
 ##################################################
 
-run:
-	find sources/ -name '*.py' -print0 | xargs -n 1 -0 python
+execute:
+	python ./sources/_sboo.py
 
-.PHONY: run
+.PHONY: execute
+
+##################################################
+
+# run:
+# 	python ./sources/_sboo.py
+
+# .PHONY: run
 
 ##################################################
 
@@ -50,7 +57,9 @@ clean:
 
 ##################################################
 
-check: build clean run
+#check: build clean execute
+
+check: build clean execute
 	@echo 
 	@echo --------------------------------------------------
 	@echo '[SUCCESS]'

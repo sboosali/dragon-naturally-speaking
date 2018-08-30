@@ -3,8 +3,8 @@
 ##################################################
 # project (local) modules:
 
-from   types import *
-import utilities
+from   .types     import *
+from   .utilities import *
 
 ##################################################
 # (natlink13 modules)

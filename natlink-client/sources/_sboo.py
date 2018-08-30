@@ -19,7 +19,7 @@ from   sboo.grammar import *
 ##################################################
 # (natlink13 modules)
 
-from   natlinkmain import (setCheckForGrammarChanges)
+from   sboo.natlinkmain import (setCheckForGrammarChanges)
 
 ##################################################
 # (standard-library modules)
@@ -85,7 +85,7 @@ def load():
     # the default behavior).
     
     GRAMMAR = NarcissisticGrammar()
-    GRAMMAR.initialize()
+    GRAMMAR.initialize(config, properties=defaultProperties)
 
 def unload():
     global GRAMMAR
