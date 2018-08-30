@@ -76,7 +76,8 @@ class NarcissisticGrammar(GrammarBase):
 
     ##############################
 
-    gramSpec = None             # :: String
+    grammar_specification = None
+    # ^ :: String
 
     ##############################################
     
@@ -99,7 +100,7 @@ class NarcissisticGrammar(GrammarBase):
     ##############################
 
 #     def configure(self, allResults=True , hypothesis=True , doOnlyGotResultsObject=True):
-#        self.load(self.gramSpec, allResults=int(allResults), hypothesis=int(hypothesis))
+#        self.load(self.grammar_specification, allResults=int(allResults), hypothesis=int(hypothesis))
 #        self.doOnlyGotResultsObject = doOnlyGotResultsObject
 
     ##############################
@@ -112,7 +113,7 @@ class NarcissisticGrammar(GrammarBase):
                   allResults = properties.shouldEavesdrop,
                   hypothesis = properties.shouldHypothesize)
         
-        self.gramSpec = rules
+        self.grammar_specification = rules
         # ^ set only after `load()` succeeds.
 
         self.set_exports(exports, properties)

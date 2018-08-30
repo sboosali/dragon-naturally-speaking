@@ -13,52 +13,58 @@
 ##################################################
 # (project (local) modules)
 
-import sboo.types
-import sboo.grammar
+from   sboo.types   import *
+from   sboo.grammar import *
 
 ##################################################
 # (natlink13 modules)
 
 from   natlinkmain import (setCheckForGrammarChanges)
-import natlink
-       # ^ (a DLL)
 
 ##################################################
 # (standard-library modules)
 
-import traceback
+#import traceback
 
 ##################################################
 # The User's Grammar
 
-# Interpolations from "H"askell:
+exports = [ 'dictating', 'spelling', 'commands' ]
 
-H_RULES  = {__rules__}
-H_LISTS  = {__lists__}
-H_EXPORT = {__export__}
+rules = '''
+<dgndictation> imported;
+<dgnletters>   imported;
 
-H_SERVER_HOST = {__serverHost__}
-H_SERVER_PORT = {__serverPort__}
+<dictating> exported = say <dgndictation> [ stop ];
+<spelling>  exported = spell <dgnletters> [ stop ];
+<commands>  exported = {commands}+;
+'''
 
-H_PROPERTIES = {__properties__}
-
-# e.g. for debugging
-# H_RULES  = '''<test> exported = \{test};'''
-# H_LISTS  = \{'test', ['upcase region']}
-# H_EXPORT = 'test'
-# H_SERVER_HOST = "192.168.56.1"
-# H_SERVER_PORT = '8666'
-# H_PROPERTIES = \{'status': True , 'exclusivity': 0, 'shouldEavesdrop': 1, 'shouldHypothesize': 1}
+lists = { 'commands':
+          [ 'cut', 'copy', 'paste', 'undo', 'select all' ] }
 
 ##################################################
 
-server_address = "http://%s:%s" % (H_SERVER_HOST, H_SERVER_PORT)
+config = GrammarConfig(exports=exports,
+                       rules=rules,
+                       lists=lists)
+
+props = fastProperties
+
+#props = voraciousProperties
+#props = fastProperties
+
+##################################################
+# The Server's Address
+
+host = '192.168.56.1'
+port = 3428
+# ^ our default port is the "dialpad-encoding" of "D-I-C-T".
+
+url = "http://%s:%s" % (host, port)
+# address of the (http) dictation server, expected to be running on the host.
+
 #TODO: HTTP versus HTTPS?
-
-##################################################
-
-microphone_rule = '''<microphone> exported = mike on | mike off | mike dead ;'''
-microphone_export = "microphone"
 
 ##################################################
 
@@ -90,4 +96,19 @@ def unload():
     GRAMMAR = None
 
 load()
+##################################################
+
+# microphone_rule = '''<microphone> exported = mike on | mike off | mike dead ;'''
+# microphone_export = "microphone"
+
+# e.g. for debugging
+# H_RULES  = '''<test> exported = \{test};'''
+# H_LISTS  = \{'test', ['upcase region']}
+# H_EXPORT = 'test'
+# H_PROPERTIES = \{'status': True , 'exclusivity': 0, 'shouldEavesdrop': 1, 'shouldHypothesize': 1}
+
+# e.g. for debugging
+# HOST = "192.168.56.1"
+# PORT = '8666'
+
 ##################################################

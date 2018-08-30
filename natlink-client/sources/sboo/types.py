@@ -13,6 +13,10 @@ from   collections import (namedtuple)
 
 ##################################################
 
+DEBUG = False
+
+##################################################
+
 class Activity(Enum):
     INACTIVE = 0
     ACTIVE   = 1
@@ -77,11 +81,11 @@ Properties = namedtuple('Properties',
                                                    #
                         ],
                         
-                        verbose=True)
+                        verbose=DEBUG)
 
 ##################################################
 
-Grammar = namedtuple('Grammar',
+GrammarConfig = namedtuple('GrammarConfig',
 
                      [ 'exports',   # :: [ String ]
                                     #
@@ -124,9 +128,7 @@ Grammar = namedtuple('Grammar',
                                     # 
                                     # 
                        
-                     ],
-                     
-                     verbose=True)
+                     ])
 
 ##################################################
 

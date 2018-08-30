@@ -8,8 +8,20 @@ default: check
 
 build:
 	find sources/ -name '*.py' -exec python -m compileall {} \;
+#	find sources/ -name '*.py' -print0 | xargs -n 1 -0 python -m compileall
 
 .PHONY: build
+
+# See
+#     https://apple.stackexchange.com/questions/49042/how-do-i-make-find-fail-if-exec-fails
+# 
+
+##################################################
+
+run:
+	find sources/ -name '*.py' -print0 | xargs -n 1 -0 python
+
+.PHONY: run
 
 ##################################################
 
@@ -38,7 +50,7 @@ clean:
 
 ##################################################
 
-check: build clean
+check: build clean run
 	@echo 
 	@echo --------------------------------------------------
 	@echo '[SUCCESS]'
