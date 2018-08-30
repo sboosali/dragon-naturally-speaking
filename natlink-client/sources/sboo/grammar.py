@@ -23,11 +23,23 @@ from   collections import (namedtuple)
 
 ##################################################
 
-defaultProperties = Properties( active                 = True, # i.e. On.
-                                exclusivity            = True, # i.e. Exclusive.
-                                shouldEavesdrop        = True, # i.e. do eavesdrop other grammars.
-                                shouldHypothesize      = True, # i.e. do handle all hypotheses.
-                                doOnlyGotResultsObject = True) # i.e. do not call `gotResults()`.
+voraciousProperties = Properties( active                 = True,  # i.e. On.
+                                  exclusivity            = True,  # i.e. Exclusive.
+                                  shouldEavesdrop        = True,  # i.e. do eavesdrop other grammars.
+                                  shouldHypothesize      = True,  # i.e. do handle all hypotheses.
+                                  doOnlyGotResultsObject = False) # i.e. do call `gotResults()`.
+
+##################################################
+
+fastProperties = Properties( active                 = True,
+                             exclusivity            = True,
+                             shouldEavesdrop        = False, # (fewer callbacks)
+                             shouldHypothesize      = False, # (fewer callbacks)
+                             doOnlyGotResultsObject = True)  # (fewer callbacks)
+
+##################################################
+
+defaultProperties = fastProperties
 
 ##################################################
 
@@ -63,8 +75,14 @@ class NarcissisticGrammar(GrammarBase):
     '''
 
     ##############################
+
+    gramSpec = None             # :: String
+
+    ##############################################
     
     def initialize(self, grammar, properties = defaultProperties):
+        # `defaultProperties`, being a `namedtuple`, is immutable;
+        # thus, it's a safe value as a keyword-argument default.
         ''' 
 
         properties :: Properties
@@ -76,7 +94,7 @@ class NarcissisticGrammar(GrammarBase):
 
         self.set_lists(grammar.lists)
 
-        self.doOnlyGotResultsObject = properties.doOnlyGotResultsObject  # aborts all further processing after calling gotResultsObject
+        self.doOnlyGotResultsObject = properties.doOnlyGotResultsObject
 
     ##############################
 
@@ -90,9 +108,12 @@ class NarcissisticGrammar(GrammarBase):
     
     def set_rules(self, rules, exports, properties):
         
-        self.gramSpec = rules #TODO necessary?
+        self.load(rules,
+                  allResults = properties.shouldEavesdrop,
+                  hypothesis = properties.shouldHypothesize)
         
-        self.load(rules, allResults = properties.shouldEavesdrop, hypothesis = properties.shouldHypothesize)
+        self.gramSpec = rules
+        # ^ set only after `load()` succeeds.
 
         self.set_exports(exports, properties)
 
@@ -103,7 +124,8 @@ class NarcissisticGrammar(GrammarBase):
         if properties.active:
             pass # TODO guard the below?
 
-        self.activateSet( exports, exclusive = properties.exclusivity )
+        self.activateSet(exports,
+                         exclusive = properties.exclusivity)
 
     # activateSet is idempotent, unlike activate
         
@@ -116,7 +138,7 @@ class NarcissisticGrammar(GrammarBase):
         for (lhs, rhs) in lists.items():
             self.setList(lhs, rhs)
 
-    ##############################
+    ##############################################
     
     # called when speech is detected, before recognition begins.
     
@@ -178,6 +200,10 @@ class NarcissisticGrammar(GrammarBase):
             print "---------- error ------------------"
             print e
             print traceback.format_exc()
+
+    ##############################################
+
+    
 
     ##############################
 

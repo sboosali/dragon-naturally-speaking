@@ -13,6 +13,18 @@ from   collections import (namedtuple)
 
 ##################################################
 
+class Activity(Enum):
+    INACTIVE = 0
+    ACTIVE   = 1
+
+##################################################
+
+class Exclusivity(Enum):
+    INCLUSIVE = 0
+    EXCLUSIVE = 1
+
+##################################################
+
 class MicrophoneState(Enum):
     ON       = 0
     SLEEPING = 1
