@@ -39,7 +39,7 @@ def recognition(resultsObject):
 
     data = todo(resultsObject)
 
-    response = post_json("/recognition", resultsObject)
+    response = post_json("/recognition", data)
 
     pass
 
@@ -61,7 +61,7 @@ def hypotheses(resultsObject):
 
 def listening():
 
-    response = post_json("/listening", null)
+    response = post_json("/listening", None)
 
     pass
 

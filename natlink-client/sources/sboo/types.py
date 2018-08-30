@@ -28,6 +28,13 @@ class RecognitionType(Enum):
 
 ##################################################
 
+class CorrectionStatus(Enum):
+    SUCCESS      = 0
+    HETEROPHONIC = 1
+    INVALID      = 2
+
+##################################################
+
 Properties = namedtuple('Properties',
 
                         [ 'active',                # :: Bool
@@ -108,5 +115,42 @@ Grammar = namedtuple('Grammar',
                      ],
                      
                      verbose=True)
+
+##################################################
+
+Recognition = namedtuple('Recognition',
+
+                       [ 'results',    # :: Results
+
+                         'recognition' # :: Recognition
+
+                       ])
+
+##################################################
+
+Hypotheses = namedtuple('Hypotheses',
+
+                       [ 'results',   # :: Results
+
+                         'hypotheses' # :: [Recognition]
+
+                       ])
+
+##################################################
+
+Corrected = namedtuple('Corrected',
+
+                       [ 'results', # :: Results
+
+                         'status'   # :: CorrectionStatus
+                       ])
+
+##################################################
+
+class Results(object):
+    # (explicitly declare new-style class, because we're in Python2)
+
+    def __init__(self, identifier):
+        self.identifier = int(identifier)
 
 ##################################################
