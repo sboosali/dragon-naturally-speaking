@@ -39,6 +39,9 @@ result/
 TAGS
 .projectile
 
+# Python
+*.pyc
+
 # OS X
 .DS_Store
 
