@@ -16,6 +16,7 @@
 
 #import traceback
 import os
+import os.path
 
 ##################################################
 # (project (local) modules)
@@ -51,42 +52,42 @@ else:
 #
 
 ##################################################
+# Variables
+
+__directory__ = os.path.dirname(__file__)
+
+##################################################
 # The User's Grammar
 
-exports = [ 'dictating', 'spelling', 'commands', 'keyboard', 'mouse' ]
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
+exports_file = os.path.join(__directory__, 'commands.txt')
+
+exports_string = None
+with open(exports_file, 'r') as f:
+    exports_string = f.read()
+
+exports = [line.strip() for line in exports_string.split('\n') if not line.isspace()]
+
+#exports = [ 'dictating', 'spelling', 'commands', 'keyboard', 'mouse' ]
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-rules = '''
-<dgndictation> imported;
-<dgnletters>   imported;
+rules_file = os.path.join(__directory__, 'commands.sapi')
 
-<dictating> exported = say   <dgndictation> [ stop ];
-<spelling>  exported = spell <dgnletters>   [ stop ];
-<commands>  exported =       <command>+     [ stop ];
-<keyboard>  exported = press <keysequence>  [ stop ];
-<mouse>     exported =       <click>        [ stop ];
-
-<modifiers> = {modifier}+;
-
-<number> = {cardinal};
-
-<command> = [ <number> ] <action>;
-<action>  = {command}; 
-
-<keysequence> = <keychord>+
-              | [ <modifiers> ] <dgnletters>;
-<keychord>    = [ <modifiers> ] <key> [ key ];
-<key>         = {key}
-              | "key-code" <number>;
-
-<click>  = [ <modifiers> ] [ {multiplier} ] [ <button> ] click;
-<button> = {button}
-         | "button-code" <number>;
-
-'''
+rules = None
+with open(rules_file, 'r') as f:
+    rules = f.read()
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
+
+lists_file = os.path.join(__directory__, 'commands.yaml')
+
+lists_string = None
+with open(lists_file, 'r') as f:
+    lists_string = f.read()
+
+#TODO lists = lists_string
 
 lists = {
 
@@ -258,6 +259,14 @@ binaryRules = parser.dumpString()
 print binaryRules
 
 print 
+print '--------------------------------------------------'
+print '[exports of grammar]'
+print
+print exports
+
+print 
+print '--------------------------------------------------'
+
 print '--------------------------------------------------'
 
 # e.g. `GramParser`:
