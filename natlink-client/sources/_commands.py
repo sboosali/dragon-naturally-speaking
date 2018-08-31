@@ -110,23 +110,33 @@ except (IOError, ValueError) as e:
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # The Server's Address
 
+def ini_get_text(config, section, option, default):
+    '''
+    '''
+
+    if config.has_option(section, option):
+        s = config.get(section, option)
+        return s
+
+    else:
+        return default
+        
 defaultAddress = Address(host = "192.168.56.1",
                          port = 3428)
 
 address_file = commands_data_file('client.ini')
 
 address = None
-ini     = None
 try:
     with open(lists_file, 'r') as f:
         address_string = f.read()
         
-        ini = ConfigParser()
-        ini.read(address_file)
+        properties_ini = ConfigParser()
+        properties_ini.read(address_file)
         
-        ##ini.options("http")
-        host_string = ini.get('http', 'host', defaultAddress.host)
-        port_string = ini.get('http', 'port', defaultAddress.port)
+        ##properties_ini.options("http")
+        host_string = ini_get_text(properties_ini, 'http', 'host', defaultAddress.host)
+        port_string = ini_get_text(properties_ini, 'http', 'port', defaultAddress.port)
 
         host = host_string
         port = int(port_string)
@@ -158,57 +168,85 @@ url = "http://%s:%s" % (address.host, address.port)
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # The Grammar's Initial Properties
 
-def from_yes(x):
+def to_enum(cls, i):
+    ''' like Haskell `toEnum`.
+
+    e.g.
+
+    >>> from enum import Enum
+
+    >>> class Exclusivity(Enum):
+    ...     INCLUSIVE = 0
+    ...     EXCLUSIVE = 1
+
+    >>> to_enum(Exclusivity, False)
+    <Exclusivity.INCLUSIVE: 0>
+
+    >>> to_enum(Exclusivity, 1)
+    <Exclusivity.EXCLUSIVE: >
+
     '''
-    parse an INI-flag (e.g. "Y", "yes", "True", "1") 
-    to a `bool` (or `Enum`) value. 
+    return cls._value2member_map_[int(i)]
 
-    case-insensitive.
+def ini_get_bool(config, section, option, default):
+    '''
+    parse an INI-sstyle flag to a `bool` value. 
+    
+    i.e. "Y", "yes", "True", "1" are all `True` (or `1`).
+
+    case-insensitive(?)
     '''
 
-    if isinstance(x, basestring):
-        s = str(x).lower().strip()
+    if config.has_option(section, option):
+        b = config.getboolean(section, option)
+        return b
+        # ^ `int` acts like `toEnum`.
 
-        b = ( s == 'y'    or
-              s == 'yes'  or
-              s == 't'    or
-              s == 'true' or
-              s == '1' )
-
-        y = int(b)
-        # ^ here, `int` acts like `toEnum`.
-        return y
-        
     else:
-        y = int(x)
-        return y
-        
-        # passthrough non-strings.
-        # (e.g. when the (string) field is absent,
-        # and thus already has been defaulted to some (non-string) value).
+        return default
+
+def ini_get_enum(EnumClass, config, section, option, default):
+    '''
+    parse an INI-sstyle flag to a the (given) `Enum` value. 
+    
+    i.e. "Y", "yes", "True", "1" are all `True` (or `1`).
+
+    case-insensitive(?)
+    '''
+
+    if config.has_option(section, option):
+        b = config.getboolean(section, option)
+        e = to_enum(EnumClass, b)
+        return e
+    
+        # ^ `int` also acts like `to_enum`,
+        # but doesn't preserve metadata for better rendering.
+
+    else:
+        return default
 
 properties_file = commands_data_file('properties.ini')
 
 properties = None
-ini        = None
 try:
     with open(lists_file, 'r') as f:
         properties_string = f.read()
         
-        ini = ConfigParser()
-        ini.read(properties_file)
+        properties_ini = ConfigParser()
+        properties_ini.read(properties_file)
 
-        active_string     = ini.get('grammar', 'active',     defaultProperties.activity)
-        exclusive_string  = ini.get('grammar', 'exclusive',  defaultProperties.exclusivity)
-        eavesdrop_string  = ini.get('grammar', 'eavesdrop',  defaultProperties.shouldEavesdrop)
-        hypotheses_string = ini.get('grammar', 'hypotheses', defaultProperties.shouldHypothesize)
-        early_string      = ini.get('grammar', 'early',      defaultProperties.doOnlyGotResultsObject)
-
-        active     = from_yes(active_string)
-        exclusive  = from_yes(exclusive_string)
-        eavesdrop  = from_yes(eavesdrop_string)
-        hypotheses = from_yes(hypotheses_string)
-        early      = from_yes(early_string)
+        active     = ini_get_enum(Activity,
+                                  properties_ini, 'grammar', 'active',
+                                  defaultProperties.activity)
+        exclusive  = ini_get_enum(Exclusivity,
+                                  properties_ini, 'grammar', 'exclusive',
+                                  defaultProperties.exclusivity)
+        eavesdrop  = ini_get_bool(properties_ini, 'grammar', 'eavesdrop',
+                                  defaultProperties.shouldEavesdrop)
+        hypotheses = ini_get_bool(properties_ini, 'grammar', 'hypotheses',
+                                  defaultProperties.shouldHypothesize)
+        early      = ini_get_bool(properties_ini, 'grammar', 'early',
+                                  defaultProperties.doOnlyGotResultsObject)
 
         properties = Properties(activity               = active,
                                 exclusivity            = exclusive,
@@ -226,6 +264,16 @@ except (IOError, ValueError) as e:
     print
     print '--------------------------------------------------'
 
+    
+# [Notes] INI Defaulting.
+#
+# to specify default values for a specific section, winter:
+#
+# or call read_dict() with a (possibly incomplete) dict, before calling read() on file.
+# 
+# or (2) .has_option(section, option)
+#
+
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
 ##################################################
@@ -233,15 +281,6 @@ except (IOError, ValueError) as e:
 config = GrammarConfig(exports=exports,
                        rules=rules,
                        lists=lists)
-
-props = fastProperties
-
-#props = voraciousProperties
-#props = fastProperties
-
-##################################################
-
-
 
 ##################################################
 # The boilerplate that `natlink` requires of a `natlink` plugin.
@@ -260,7 +299,7 @@ def load():
     # the default behavior).
     
     GRAMMAR = NarcissisticGrammar()
-    GRAMMAR.initialize(config, properties=defaultProperties)
+    GRAMMAR.initialize(config, properties=properties)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -296,7 +335,8 @@ parser.checkForErrors()
 
 binaryRules = parser.dumpString()
 
-print binaryRules
+#DEBUG print binaryRules
+
 print 
 print '--------------------------------------------------'
 print '[grammar EXPORTS]'
@@ -311,7 +351,7 @@ print
 print '--------------------------------------------------'
 print '[grammar PROPERTIES]'
 print
-print props
+print properties
 print 
 print '--------------------------------------------------'
 print '[server ADDRESS]'
