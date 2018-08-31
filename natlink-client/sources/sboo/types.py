@@ -17,18 +17,6 @@ DEBUG = False
 
 ##################################################
 
-class Activity(Enum):
-    INACTIVE = 0
-    ACTIVE   = 1
-
-##################################################
-
-class Exclusivity(Enum):
-    INCLUSIVE = 0
-    EXCLUSIVE = 1
-
-##################################################
-
 class MicrophoneState(Enum):
     ON       = 0
     SLEEPING = 1
@@ -44,10 +32,31 @@ class RecognitionType(Enum):
 
 ##################################################
 
+class Activity(Enum):
+    INACTIVE = 0
+    ACTIVE   = 1
+
+##################################################
+
+class Exclusivity(Enum):
+    INCLUSIVE = 0
+    EXCLUSIVE = 1
+
+##################################################
+
 class CorrectionStatus(Enum):
     SUCCESS      = 0
     HETEROPHONIC = 1
     INVALID      = 2
+
+##################################################
+
+Address = namedtuple('Address',
+
+                        [ 'host',           # :: String
+                          
+                          'port'            # :: Int
+                        ])
 
 ##################################################
 

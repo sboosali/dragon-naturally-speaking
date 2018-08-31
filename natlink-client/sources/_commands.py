@@ -14,9 +14,13 @@
 ##################################################
 # (standard-library modules)
 
-#import traceback
 import os
 import os.path
+
+import json
+from   ConfigParser import ConfigParser
+
+#import traceback
 
 ##################################################
 # (project (local) modules)
@@ -99,11 +103,56 @@ except (IOError, ValueError) as e:
     print
     print '--------------------------------------------------'
 
-    raise e
+    # ^ failure is acceptable, whether during file-reading or json-decoding.
+    # lists, unlike rules, can be mutated dynamically.
+    # so, we're only loading the initial/default values.
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
+# The Server's Address
+
+defaultAddress = Address(host = "192.168.56.1",
+                         port = 3428)
+
+address_file = commands_data_file('client.ini')
+
+address = None
+try:
+    with open(lists_file, 'r') as f:
+        address_string = f.read()
+        
+        ini = ConfigParser()
+        ini.read(address_file)
+        
+        ##ini.options("http")
+        host_string = ini.get('http', 'host', defaultAddress.host)
+        port_string = ini.get('http', 'port', defaultAddress.port)
+
+        host = host_string
+        port = int(port_string)
+
+        address = Address(host = host,
+                          port = port)
+
+# url = "http://%s:%s" % (host, port)
+# # address of the (http) dictation server, expected to be running on the host.
+# #TODO: HTTP versus HTTPS?    with open(lists_file, 'r') as f
+
+except (IOError, ValueError) as e:
+    address = defaultAddress
+
+    print '--------------------------------------------------'
+    print '[WARNING]'
+    print
+    print e
+    print
+    print '--------------------------------------------------'
 
     # ^ failure is acceptable, whether during file-reading or json-decoding.
     # lists, unlike rules, can be mutated dynamically.
     # so, we're only loading the initial/default values.
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
 
 ##################################################
 
@@ -115,18 +164,6 @@ props = fastProperties
 
 #props = voraciousProperties
 #props = fastProperties
-
-##################################################
-# The Server's Address
-
-host = '192.168.56.1'
-port = 3428
-# ^ our default port is the "dialpad-encoding" of "D-I-C-T".
-
-url = "http://%s:%s" % (host, port)
-# address of the (http) dictation server, expected to be running on the host.
-
-#TODO: HTTP versus HTTPS?
 
 ##################################################
 
@@ -196,6 +233,11 @@ print '--------------------------------------------------'
 print '[grammar LISTS]'
 print
 print lists
+print 
+print '--------------------------------------------------'
+print '[server ADDRESS]'
+print
+print address
 print 
 print '--------------------------------------------------'
 print '--------------------------------------------------'
