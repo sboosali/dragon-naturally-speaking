@@ -116,6 +116,7 @@ defaultAddress = Address(host = "192.168.56.1",
 address_file = commands_data_file('client.ini')
 
 address = None
+ini     = None
 try:
     with open(lists_file, 'r') as f:
         address_string = f.read()
@@ -147,12 +148,85 @@ except (IOError, ValueError) as e:
     print
     print '--------------------------------------------------'
 
-    # ^ failure is acceptable, whether during file-reading or json-decoding.
-    # lists, unlike rules, can be mutated dynamically.
-    # so, we're only loading the initial/default values.
+    # ^ failure is acceptable, whether during file-reading or ini-decoding.
+    # because we can fallback to the default server address.
+
+url = "http://%s:%s" % (address.host, address.port)
+# # properties of the (http) dictation server, expected to be running on the host.
+# #TODO: HTTP versus HTTPS?    with open(lists_file, 'r') as f
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
+# The Grammar's Initial Properties
 
+def from_yes(x):
+    '''
+    parse an INI-flag (e.g. "Y", "yes", "True", "1") 
+    to a `bool` (or `Enum`) value. 
+
+    case-insensitive.
+    '''
+
+    if isinstance(x, basestring):
+        s = str(x).lower().strip()
+
+        b = ( s == 'y'    or
+              s == 'yes'  or
+              s == 't'    or
+              s == 'true' or
+              s == '1' )
+
+        y = int(b)
+        # ^ here, `int` acts like `toEnum`.
+        return y
+        
+    else:
+        y = int(x)
+        return y
+        
+        # passthrough non-strings.
+        # (e.g. when the (string) field is absent,
+        # and thus already has been defaulted to some (non-string) value).
+
+properties_file = commands_data_file('properties.ini')
+
+properties = None
+ini        = None
+try:
+    with open(lists_file, 'r') as f:
+        properties_string = f.read()
+        
+        ini = ConfigParser()
+        ini.read(properties_file)
+
+        active_string     = ini.get('grammar', 'active',     defaultProperties.activity)
+        exclusive_string  = ini.get('grammar', 'exclusive',  defaultProperties.exclusivity)
+        eavesdrop_string  = ini.get('grammar', 'eavesdrop',  defaultProperties.shouldEavesdrop)
+        hypotheses_string = ini.get('grammar', 'hypotheses', defaultProperties.shouldHypothesize)
+        early_string      = ini.get('grammar', 'early',      defaultProperties.doOnlyGotResultsObject)
+
+        active     = from_yes(active_string)
+        exclusive  = from_yes(exclusive_string)
+        eavesdrop  = from_yes(eavesdrop_string)
+        hypotheses = from_yes(hypotheses_string)
+        early      = from_yes(early_string)
+
+        properties = Properties(activity               = active,
+                                exclusivity            = exclusive,
+                                shouldEavesdrop        = eavesdrop,
+                                shouldHypothesize      = hypotheses,
+                                doOnlyGotResultsObject = early)
+
+except (IOError, ValueError) as e:
+    properties = defaultProperties
+
+    print '--------------------------------------------------'
+    print '[WARNING]'
+    print
+    print e
+    print
+    print '--------------------------------------------------'
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 ##################################################
 
@@ -233,6 +307,11 @@ print '--------------------------------------------------'
 print '[grammar LISTS]'
 print
 print lists
+print 
+print '--------------------------------------------------'
+print '[grammar PROPERTIES]'
+print
+print props
 print 
 print '--------------------------------------------------'
 print '[server ADDRESS]'

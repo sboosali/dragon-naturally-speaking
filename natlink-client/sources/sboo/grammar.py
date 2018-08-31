@@ -16,27 +16,35 @@ import natlink
 # standard-library modules:
 
 import time
+import traceback
 import json
 import urllib2
-import traceback
 from   collections import (namedtuple)
 
 ##################################################
 
-voraciousProperties = Properties( active                 = True,  # i.e. On.
-                                  exclusivity            = True,  # i.e. Exclusive.
+voraciousProperties = Properties( activity               = Activity.ACTIVE,
+                                  exclusivity            = Exclusivity.EXCLUSIVE,
                                   shouldEavesdrop        = True,  # i.e. do eavesdrop other grammars.
                                   shouldHypothesize      = True,  # i.e. do handle all hypotheses.
                                   doOnlyGotResultsObject = False) # i.e. do call `gotResults()`.
 
 ##################################################
 
-fastProperties = Properties( active                 = True,
-                             exclusivity            = True,
+fastProperties = Properties( activity               = Activity.ACTIVE,
+                             exclusivity            = Exclusivity.EXCLUSIVE,
                              shouldEavesdrop        = False, # (fewer callbacks)
                              shouldHypothesize      = False, # (fewer callbacks)
                              doOnlyGotResultsObject = True)  # (fewer callbacks)
 
+##################################################
+
+generousProperties = Properties( activity               = Activity.ACTIVE,
+                                 exclusivity            = Exclusivity.INCLUSIVE,
+                                 shouldEavesdrop        = True,
+                                 shouldHypothesize      = False,
+                                 doOnlyGotResultsObject = True)
+ 
 ##################################################
 
 defaultProperties = fastProperties
@@ -122,7 +130,7 @@ class NarcissisticGrammar(GrammarBase):
         
     def set_exports(self, exports, properties):
 
-        if properties.active:
+        if properties.activity:
             pass # TODO guard the below?
 
         self.activateSet(exports,

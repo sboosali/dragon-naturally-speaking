@@ -25,29 +25,37 @@ class MicrophoneState(Enum):
 
 ##################################################
 
-class RecognitionType(Enum):
-    SELF   = 0
-    REJECT = 1
-    OTHER  = 2
+class CorrectionStatus(Enum):
+    SUCCESS      = 0
+    HETEROPHONIC = 1
+    INVALID      = 2
 
 ##################################################
 
 class Activity(Enum):
+    '''`bool`-like.
+
+    i.e. two variants, the "falsy" coming before the "truthy".
+    '''
     INACTIVE = 0
     ACTIVE   = 1
 
 ##################################################
 
 class Exclusivity(Enum):
+    '''`bool`-like.
+
+    i.e. two variants, the "falsy" coming before the "truthy".
+    '''
     INCLUSIVE = 0
     EXCLUSIVE = 1
 
 ##################################################
 
-class CorrectionStatus(Enum):
-    SUCCESS      = 0
-    HETEROPHONIC = 1
-    INVALID      = 2
+class RecognitionType(Enum):
+    SELF   = 0
+    REJECT = 1
+    OTHER  = 2
 
 ##################################################
 
@@ -62,20 +70,16 @@ Address = namedtuple('Address',
 
 Properties = namedtuple('Properties',
 
-                        [ 'active',                # :: Bool
-                                                   #
-                                                   # =  Off | On
+                        [ 'activity',              # :: `Activity` (Enum)
                                                    #
                           
-                          'exclusivity',           # :: Bool
-                                                   #
-                                                   # =  Inclusive | Exclusive
+                          'exclusivity',           # :: `Exclusivity` (Enum)
                                                    #
                           
                           'shouldEavesdrop',       # :: Bool
                                                    #
                                                    # if `exclusivity` is Inclusive (i.e. `False`), then `shouldEavesdrop` being `True` means:
-                                                   # call the `gotResultsObject()` methods of other grammars which are active (i.e. their `active` is `On`).
+                                                   # call the `gotResultsObject()` methods of other grammars which are active (i.e. their `activity` is `ACTIVE`).
                                                    #
                           
                           'shouldHypothesize',     # :: Bool
