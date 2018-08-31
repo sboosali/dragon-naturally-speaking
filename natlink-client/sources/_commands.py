@@ -32,14 +32,30 @@ if os.environ.get('SBOO_NATLINK'):
     # ^ for testing on the host, import stubbed `natlink` signatures.
 
 else:
-    # tyhe environment-variable is unset or set to a falsy value.
+    # type environment-variable is unset or set to a falsy value.
     from      natlinkmain import (setCheckForGrammarChanges)
     # ^ for running on the guest.
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
+if os.environ.get('SBOO_NATLINK'):
+    import sboo.gramparser as gramparser
+    
+else:
+    import                    gramparser
+
+# ^ `gramparser`:
+#
+#      This module contains the Python code to convert the textual represenation
+#   of a command and control grammar in the standard SAPI CFG binary format.
+#
 
 ##################################################
 # The User's Grammar
 
-exports = [ 'dictating', 'spelling', 'commands' ]
+exports = [ 'dictating', 'spelling', 'commands', 'keyboard', 'mouse' ]
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 rules = '''
 <dgndictation> imported;
@@ -51,7 +67,7 @@ rules = '''
 <keyboard>  exported = press <keysequence>  [ stop ];
 <mouse>     exported =       <click>        [ stop ];
 
-<modifiers> = {modifier}*;
+<modifiers> = {modifier}+;
 
 <number> = {cardinal};
 
@@ -59,16 +75,18 @@ rules = '''
 <action>  = {command}; 
 
 <keysequence> = <keychord>+
-              | <modifiers> <dgnletters>;
-<keychord>    = <modifiers> <key> [ key ];
+              | [ <modifiers> ] <dgnletters>;
+<keychord>    = [ <modifiers> ] <key> [ key ];
 <key>         = {key}
-              | key-code <number>;
+              | "key-code" <number>;
 
-<click>  = <modifiers> [ {multiplier} ] [ <button> ] click;
+<click>  = [ <modifiers> ] [ {multiplier} ] [ <button> ] click;
 <button> = {button}
-         | button-code <number>;
+         | "button-code" <number>;
 
 '''
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 lists = {
 
@@ -189,6 +207,8 @@ url = "http://%s:%s" % (host, port)
 GRAMMAR = None
 # ^ a mutable variable (global by intent).
 
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
 def load():
     global GRAMMAR
 
@@ -200,6 +220,8 @@ def load():
     GRAMMAR = NarcissisticGrammar()
     GRAMMAR.initialize(config, properties=defaultProperties)
 
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
 def unload():
     global GRAMMAR
     
@@ -208,7 +230,185 @@ def unload():
 
     GRAMMAR = None
 
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
 load()
+
+##################################################
+
+# if __name__ == "__main__":
+
+print '--------------------------------------------------'
+print '[source grammar]'
+print
+
+print rules
+
+print 
+print '--------------------------------------------------'
+print '[binary grammar]'
+print 
+
+linedRules = rules.split('\n')
+parser = gramparser.GramParser(linedRules)
+parser.doParse()
+parser.checkForErrors()
+
+binaryRules = parser.dumpString()
+print binaryRules
+
+print 
+print '--------------------------------------------------'
+
+# e.g. `GramParser`:
+#
+# >>> gramSpec = ['<rule> exported = action;']
+# >>> parser = GramParser(gramSpec)
+# >>> parser.doParse()
+# >>> parser.checkForErrors()
+# >>> print parser.dumpString()
+# knownRules: 
+# {'rule': 1}
+# knownWords: 
+# {'action': 1}
+# exportRules: 
+# {'rule': 1}
+# ruleDefines: 
+# {'rule': [('word', 1)]}
+#
+
+# e.g.
+#
+# knownRules:
+# {'action': 13,
+#  'button': 16,
+#  'click': 10,
+#  'command': 6,
+#  'commands': 5,
+#  'dgndictation': 1,
+#  'dgnletters': 2,
+#  'dictating': 3,
+#  'key': 15,
+#  'keyboard': 7,
+#  'keychord': 14,
+#  'keysequence': 8,
+#  'modifiers': 11,
+#  'mouse': 9,
+#  'number': 12,
+#  'spelling': 4}
+# knownLists:
+# {'button': 6,
+#  'cardinal': 2,
+#  'command': 3,
+#  'key': 4,
+#  'modifier': 1,
+#  'multiplier': 5}
+# knownWords:
+# {'button-code': 8,
+#  'click': 7,
+#  'key': 5,
+#  'key-code': 6,
+#  'press': 4,
+#  'say': 1,
+#  'spell': 3,
+#  'stop': 2}
+# exportRules:
+# {'commands': 5, 'dictating': 3, 'keyboard': 7, 'mouse': 9, 'spelling': 4}
+# importRules:
+# {'dgndictation': 1, 'dgnletters': 2}
+# ruleDefines:
+# {'action': [('list', 3)],
+#  'button': [('start', 2),
+#             ('list', 6),
+#             ('start', 1),
+#             ('word', 8),
+#             ('rule', 12),
+#             ('end', 1),
+#             ('end', 2)],
+#  'click': [('start', 1),
+#            ('start', 4),
+#            ('rule', 11),
+#            ('end', 4),
+#            ('start', 4),
+#            ('list', 5),
+#            ('end', 4),
+#            ('start', 4),
+#            ('rule', 16),
+#            ('end', 4),
+#            ('word', 7),
+#            ('end', 1)],
+#  'command': [('start', 1),
+#              ('start', 4),
+#              ('rule', 12),
+#              ('end', 4),
+#              ('rule', 13),
+#              ('end', 1)],
+#  'commands': [('start', 1),
+#               ('start', 3),
+#               ('rule', 6),
+#               ('end', 3),
+#               ('start', 4),
+#               ('word', 2),
+#               ('end', 4),
+#               ('end', 1)],
+#  'dictating': [('start', 1),
+#                ('word', 1),
+#                ('rule', 1),
+#                ('start', 4),
+#                ('word', 2),
+#                ('end', 4),
+#                ('end', 1)],
+#  'key': [('start', 2),
+#          ('list', 4),
+#          ('start', 1),
+#          ('word', 6),
+#          ('rule', 12),
+#          ('end', 1),
+#          ('end', 2)],
+#  'keyboard': [('start', 1),
+#               ('word', 4),
+#               ('rule', 8),
+#               ('start', 4),
+#               ('word', 2),
+#               ('end', 4),
+#               ('end', 1)],
+#  'keychord': [('start', 1),
+#               ('start', 4),
+#               ('rule', 11),
+#               ('end', 4),
+#               ('rule', 15),
+#               ('start', 4),
+#               ('word', 5),
+#               ('end', 4),
+#               ('end', 1)],
+#  'keysequence': [('start', 2),
+#                  ('start', 3),
+#                  ('rule', 14),
+#                  ('end', 3),
+#                  ('start', 1),
+#                  ('start', 4),
+#                  ('rule', 11),
+#                  ('end', 4),
+#                  ('rule', 2),
+#                  ('end', 1),
+#                  ('end', 2)],
+#  'modifiers': [('start', 3), ('list', 1), ('end', 3)],
+#  'mouse': [('start', 1),
+#            ('rule', 10),
+#            ('start', 4),
+#            ('word', 2),
+#            ('end', 4),
+#            ('end', 1)],
+#  'number': [('list', 2)],
+#  'spelling': [('start', 1),
+#               ('word', 3),
+#               ('rule', 2),
+#               ('start', 4),
+#               ('word', 2),
+#               ('end', 4),
+#               ('end', 1)]}
+#
+
 ##################################################
 
 # microphone_rule = '''<microphone> exported = mike on | mike off | mike dead ;'''
