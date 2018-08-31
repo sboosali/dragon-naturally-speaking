@@ -48,12 +48,13 @@ execute:
 
 ##################################################
 
-# install:
-# 	nix-env -i -A nixpkgs.python27
-# 	nix-env -i -A nixpkgs.python27.pkgs.requests
-# 	nix-env -i -A nixpkgs.python27.pkgs.msgpack
+install:
+	nix-env -i -A nodePackages.jsonlint
+#	nix-env -i -A nixpkgs.python27
+#	nix-env -i -A nixpkgs.python27.pkgs.requests
+#	nix-env -i -A nixpkgs.python27.pkgs.msgpack
 
-# .PHONY: install
+.PHONY: install
 
 # #TODO pip install -r requirements.txt
 
@@ -63,6 +64,19 @@ clean:
 	find "$(SOURCE_DIRECTORY)/" -name '*.pyc' -exec rm {} \;
 
 .PHONY: clean
+
+##################################################
+
+validate:
+	@echo 
+	@echo --------------------------------------------------
+	@echo '[JSON]'
+	@echo 
+	find "$(SOURCE_DIRECTORY)/" -type f -name '*.json' -print0 | xargs -n 1 -0 jsonlint
+	@echo 
+	@echo --------------------------------------------------
+
+.PHONY: validate
 
 ##################################################
 

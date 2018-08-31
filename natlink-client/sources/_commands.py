@@ -56,24 +56,24 @@ else:
 
 __directory__ = os.path.dirname(__file__)
 
+def commands_data_file(filename):
+    return os.path.join(__directory__, 'commands', filename)
+
 ##################################################
 # The User's Grammar
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-exports_file = os.path.join(__directory__, 'commands.txt')
+exports_file = commands_data_file('exports.txt')
 
-exports_string = None
+exports = None
 with open(exports_file, 'r') as f:
     exports_string = f.read()
-
-exports = [line.strip() for line in exports_string.split('\n') if not line.isspace()]
-
-#exports = [ 'dictating', 'spelling', 'commands', 'keyboard', 'mouse' ]
+    exports = [line.strip() for line in exports_string.split('\n') if not line.isspace()]
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-rules_file = os.path.join(__directory__, 'commands.sapi')
+rules_file = commands_data_file('rules.sapi')
 
 rules = None
 with open(rules_file, 'r') as f:
@@ -81,99 +81,29 @@ with open(rules_file, 'r') as f:
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-lists_file = os.path.join(__directory__, 'commands.yaml')
+lists_file = commands_data_file('lists.json')
 
-lists_string = None
-with open(lists_file, 'r') as f:
-    lists_string = f.read()
+lists = None
+try:
+    with open(lists_file, 'r') as f:
+        lists_string = f.read()
+        lists = json.loads(lists_string)
 
-#TODO lists = lists_string
+except (IOError, ValueError) as e:
+    lists = {}
 
-lists = {
+    print '--------------------------------------------------'
+    print '[WARNING]'
+    print
+    print e
+    print
+    print '--------------------------------------------------'
 
-    'command': [
-        'paste', 'undo',
-        'cut', 'copy', 
-        'select all',
-    ],
+    raise e
 
-    'multiplier': [
-        'single', 'double', 'triple'
-    ],
-    
-    'button': [
-        'left', 'middle', 'right'
-    ],
-    
-    'modifier': [
-        'control', 'alt', 'shift', 'win', 'meta',
-        'con', 'met'
-    ],
-
-    'key': [
-        
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-
-        'alfa\\A', 'bravo\\B', 'charlie\\C', 'delta\\D', 'echo\\E', 'foxtrot\\F', 'golf\\G', 'hotel\\H', 'india\\I', 'juliett\\J', 'kilo\\K', 'lima\\L', 'mike\\M', 'november\\N', 'oscar\\O', 'papa\\P', 'quebec\\Q', 'romeo\\R', 'sierra\\S', 'tango\\T', 'uniform\\U', 'victor\\V', 'whiskey\\W', 'x\\X-ray', 'yankee\\Y', 'zulu\\Z',
-
-        'escape', 'grave', 'minus', 'equal', 'delete', 'forward-delete', 'left-bracket', 'right-bracket', 'backslash', 'semicolon', 'quote', 'comma', 'period', 'slash'
-        # (shifted)
-
-
-        'tab', 'space', 'return',
-
-        'up', 'down', 'left', 'right'
-
-        'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
-        # (shifted)
-
-
-        'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F20',
-
-        # aliases...
-        
-        'cape', 'eek', 'del', 'fell',
-        'lack', 'rack',
-        'lace', 'race',
-        'lore', 'roar',
-        'stroke', 'sem', 'coal', 'ma', 'dot', 
-        #TODO sem, ma,
-        'ace','ret'
-    ],
-
-    'cardinal': [
-        
-	'zero', 'nought', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
-        'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
-        "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine",
-        "thrity", "thrity-one", "thrity-two", "thrity-three", "thrity-four", "thrity-five", "thrity-six", "thrity-seven", "thrity-eight", "thrity-nine",
-        "forty", "forty-one", "forty-two", "forty-three", "forty-four", "forty-five", "forty-six", "forty-seven", "forty-eight", "forty-nine",
-        "fifty", "fifty-one", "fifty-two", "fifty-three", "fifty-four", "fifty-five", "fifty-six", "fifty-seven", "fifty-eight", "fifty-nine",
-        "sixty", "sixty-one", "sixty-two", "sixty-three", "sixty-four", "sixty-five", "sixty-six", "sixty-seven", "sixty-eight", "sixty-nine",
-        "seventy", "seventy-one", "seventy-two", "seventy-three", "seventy-four", "seventy-five", "seventy-six", "seventy-seven", "seventy-eight", "seventy-nine",
-        "eighty", "eighty-one", "eighty-two", "eighty-three", "eighty-four", "eighty-five", "eighty-six", "eighty-seven", "eighty-eight", "eighty-nine",
-        "ninety", "ninety-one", "ninety-two", "ninety-three", "ninety-four", "ninety-five", "ninety-six", "ninety-seven", "ninety-eight", "ninety-nine",
-        "hundred"
-        
-        ],
-
-    'ordinal': [
-
-        "zeroth", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
-        "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth",
-        "twentieth", "twenty-first", "twenty-second", "twenty-third", "twenty-fourth", "twenty-fifth", "twenty-sixth", "twenty-seventh", "twenty-eighth", "twenty-ninth",
-        "thritieth", "thrity-first", "thrity-second", "thrity-third", "thrity-fourth", "thrity-fifth", "thrity-sixth", "thrity-seventh", "thrity-eighth", "thrity-ninth",
-        "fortieth", "forty-first", "forty-second", "forty-third", "forty-fourth", "forty-fifth", "forty-sixth", "forty-seventh", "forty-eighth", "forty-ninth",
-        "fiftieth", "fifty-first", "fifty-second", "fifty-third", "fifty-fourth", "fifty-fifth", "fifty-sixth", "fifty-seventh", "fifty-eighth", "fifty-ninth",
-        "sixtieth", "sixty-first", "sixty-second", "sixty-third", "sixty-fourth", "sixty-fifth", "sixty-sixth", "sixty-seventh", "sixty-eighth", "sixty-ninth",
-        "seventieth", "seventy-first", "seventy-second", "seventy-third", "seventy-fourth", "seventy-fifth", "seventy-sixth", "seventy-seventh", "seventy-eighth", "seventy-ninth",
-        "eightieth", "eighty-first", "eighty-second", "eighty-third", "eighty-fourth", "eighty-fifth", "eighty-sixth", "eighty-seventh", "eighty-eighth", "eighty-ninth",
-        "ninetieth", "ninety-first", "ninety-second", "ninety-third", "ninety-fourth", "ninety-fifth", "ninety-sixth", "ninety-seventh", "ninety-eighth", "ninety-ninth",
-        "hundredth"
-
-    ]
-
-  }
+    # ^ failure is acceptable, whether during file-reading or json-decoding.
+    # lists, unlike rules, can be mutated dynamically.
+    # so, we're only loading the initial/default values.
 
 ##################################################
 
@@ -242,9 +172,7 @@ load()
 print '--------------------------------------------------'
 print '[source grammar]'
 print
-
 print rules
-
 print 
 print '--------------------------------------------------'
 print '[binary grammar]'
@@ -256,17 +184,20 @@ parser.doParse()
 parser.checkForErrors()
 
 binaryRules = parser.dumpString()
-print binaryRules
 
+print binaryRules
 print 
 print '--------------------------------------------------'
-print '[exports of grammar]'
+print '[grammar EXPORTS]'
 print
 print exports
-
 print 
 print '--------------------------------------------------'
-
+print '[grammar LISTS]'
+print
+print lists
+print 
+print '--------------------------------------------------'
 print '--------------------------------------------------'
 
 # e.g. `GramParser`:
