@@ -25,8 +25,9 @@ from   ConfigParser import ConfigParser
 ##################################################
 # (project (local) modules)
 
-from   sboo.types   import *
-from   sboo.grammar import *
+from   sboo.types     import *
+from   sboo.grammar   import *
+from   sboo.utilities import *
 
 ##################################################
 # (natlink13 modules)
@@ -73,7 +74,7 @@ exports_file = commands_data_file('exports.txt')
 exports = None
 with open(exports_file, 'r') as f:
     exports_string = f.read()
-    exports = [line.strip() for line in exports_string.split('\n') if not line.isspace()]
+    exports = to_words(exports_string)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -96,12 +97,7 @@ try:
 except (IOError, ValueError) as e:
     lists = {}
 
-    print '--------------------------------------------------'
-    print '[WARNING]'
-    print
-    print e
-    print
-    print '--------------------------------------------------'
+    print_exception_as_warning(e)
 
     # ^ failure is acceptable, whether during file-reading or json-decoding.
     # lists, unlike rules, can be mutated dynamically.
@@ -109,17 +105,6 @@ except (IOError, ValueError) as e:
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # The Server's Address
-
-def ini_get_text(config, section, option, default):
-    '''
-    '''
-
-    if config.has_option(section, option):
-        s = config.get(section, option)
-        return s
-
-    else:
-        return default
         
 defaultAddress = Address(host = "192.168.56.1",
                          port = 3428)
@@ -144,19 +129,10 @@ try:
         address = Address(host = host,
                           port = port)
 
-# url = "http://%s:%s" % (host, port)
-# # address of the (http) dictation server, expected to be running on the host.
-# #TODO: HTTP versus HTTPS?    with open(lists_file, 'r') as f
-
 except (IOError, ValueError) as e:
     address = defaultAddress
 
-    print '--------------------------------------------------'
-    print '[WARNING]'
-    print
-    print e
-    print
-    print '--------------------------------------------------'
+    print_exception_as_warning(e)
 
     # ^ failure is acceptable, whether during file-reading or ini-decoding.
     # because we can fallback to the default server address.
@@ -167,63 +143,6 @@ url = "http://%s:%s" % (address.host, address.port)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # The Grammar's Initial Properties
-
-def to_enum(cls, i):
-    ''' like Haskell `toEnum`.
-
-    e.g.
-
-    >>> from enum import Enum
-
-    >>> class Exclusivity(Enum):
-    ...     INCLUSIVE = 0
-    ...     EXCLUSIVE = 1
-
-    >>> to_enum(Exclusivity, False)
-    <Exclusivity.INCLUSIVE: 0>
-
-    >>> to_enum(Exclusivity, 1)
-    <Exclusivity.EXCLUSIVE: >
-
-    '''
-    return cls._value2member_map_[int(i)]
-
-def ini_get_bool(config, section, option, default):
-    '''
-    parse an INI-sstyle flag to a `bool` value. 
-    
-    i.e. "Y", "yes", "True", "1" are all `True` (or `1`).
-
-    case-insensitive(?)
-    '''
-
-    if config.has_option(section, option):
-        b = config.getboolean(section, option)
-        return b
-        # ^ `int` acts like `toEnum`.
-
-    else:
-        return default
-
-def ini_get_enum(EnumClass, config, section, option, default):
-    '''
-    parse an INI-sstyle flag to a the (given) `Enum` value. 
-    
-    i.e. "Y", "yes", "True", "1" are all `True` (or `1`).
-
-    case-insensitive(?)
-    '''
-
-    if config.has_option(section, option):
-        b = config.getboolean(section, option)
-        e = to_enum(EnumClass, b)
-        return e
-    
-        # ^ `int` also acts like `to_enum`,
-        # but doesn't preserve metadata for better rendering.
-
-    else:
-        return default
 
 properties_file = commands_data_file('properties.ini')
 
@@ -257,14 +176,8 @@ try:
 except (IOError, ValueError) as e:
     properties = defaultProperties
 
-    print '--------------------------------------------------'
-    print '[WARNING]'
-    print
-    print e
-    print
-    print '--------------------------------------------------'
+    print_exception_as_warning(e)
 
-    
 # [Notes] INI Defaulting.
 #
 # to specify default values for a specific section, winter:

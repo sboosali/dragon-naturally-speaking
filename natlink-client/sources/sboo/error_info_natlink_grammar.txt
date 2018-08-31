@@ -1,9 +1,0 @@
-Info about scanner/parser error of NatLink grammar
-
-
-
-The complete grammar:
-
-=> <modifiers> = {modifier}*;
-=>                         ^
-
