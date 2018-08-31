@@ -45,23 +45,45 @@ rules = '''
 <dgndictation> imported;
 <dgnletters>   imported;
 
-<dictating> exported = say <dgndictation> [ stop ];
-<spelling>  exported = spell <dgnletters> [ stop ];
-<commands>  exported = {commands}+;
-<keyboard>  exported = press <keysequence> [ stop ];
-<mouse>     exported = click  [ stop ];
+<dictating> exported = say   <dgndictation> [ stop ];
+<spelling>  exported = spell <dgnletters>   [ stop ];
+<commands>  exported =       <command>+     [ stop ];
+<keyboard>  exported = press <keysequence>  [ stop ];
+<mouse>     exported =       <click>        [ stop ];
+
+<modifiers> = {modifier}*;
+
+<number> = {cardinal};
+
+<command> = [ <number> ] <action>;
+<action>  = {command}; 
 
 <keysequence> = <keychord>+
-              | {modifier}* <dgnletters>;
-<keychord>    = {modifier}* <key> [ key ];
-<key>         = {key};
+              | <modifiers> <dgnletters>;
+<keychord>    = <modifiers> <key> [ key ];
+<key>         = {key}
+              | key-code <number>;
+
+<click>  = <modifiers> [ {multiplier} ] [ <button> ] click;
+<button> = {button}
+         | button-code <number>;
 
 '''
 
 lists = {
 
-    'commands': [
-      'cut', 'copy', 'paste', 'undo', 'select all'
+    'command': [
+        'paste', 'undo',
+        'cut', 'copy', 
+        'select all',
+    ],
+
+    'multiplier': [
+        'single', 'double', 'triple'
+    ],
+    
+    'button': [
+        'left', 'middle', 'right'
     ],
     
     'modifier': [

@@ -27,8 +27,7 @@ NatSpeak’s VDct uses a chart parser to format dates, time, numbers, currency, 
 -}
 
 module Natlink.Types
-  ( module Natlink.Types
-  , module Natlink.Audio.Types
+  ( module Natlink.Audio.Types
   , module Natlink.Correction.Types
   , module Natlink.DragonScript.Types
   , module Natlink.Grammar.Types
@@ -38,6 +37,7 @@ module Natlink.Types
   , module Natlink.Python.Types
   , module Natlink.Recognition.Types
   , module Natlink.Term.Types
+  --, module Natlink.Types
   ) where
 
 --------------------------------------------------
