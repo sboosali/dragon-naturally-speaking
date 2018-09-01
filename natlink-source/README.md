@@ -6,7 +6,7 @@ the `.exe` is the first stable release of a `NatLink` that is compatible with `D
 
 ## source code
 
-later, the NatLink Project should release the source, including the fixed `natlink.pyd`.
+later, the NatLink Project should release the source officially, including the fixed `natlink.pyd`. now, i just ran the `.exe` (a "self-extracting installer") on a Windows machine and copied the extracted files here. see `./ Natlink-4.1-victor/`.
 
 ### licensing
 
