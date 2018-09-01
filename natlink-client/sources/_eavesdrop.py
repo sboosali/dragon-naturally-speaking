@@ -221,7 +221,7 @@ class EavesdropGrammar(GrammarBase):
         self.doOnlyGotResultsObject = properties.doOnlyGotResultsObject
 
     ##############################
-    
+
     def set_rules(self, rules, exports, properties):
         
         self.load(rules,

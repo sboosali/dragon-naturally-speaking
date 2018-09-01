@@ -1,22 +1,25 @@
 ##################################################
-# builtins
+# builtin non-terminals ##########################
 ##################################################
 
 <dgndictation> imported;
 <dgnletters>   imported;
 
 ##################################################
-# public non-terminals
+# public non-terminals ###########################
 ##################################################
 
 <dictating> exported = say   <dgndictation> [ stop ];
 <spelling>  exported = spell <dgnletters>   [ stop ];
 <keyboard>  exported = press <keysequence>  [ stop ];
+
 <mouse>     exported =       <click>        [ stop ];
 <commands>  exported =       <command>+     [ stop ];
 
+<inserting> exported = insert [ <insert_how> ] <insert_what>;
+
 ##################################################
-# private non-terminals
+# private non-terminals ##########################
 ##################################################
 
 <command> = [<number>] <action>;
@@ -74,5 +77,341 @@
 <modifiers> = {modifier}+;
 
 <number> = {cardinal};
+
+#------------------------------------------------#
+
+<insert_how> = text | keys | clipboard;
+
+<insert_what> = <phrase>;
+
+#------------------------------------------------#
+
+##################################################
+# the core non-terminal for dictation ############
+##################################################
+
+<phrase>
+ = [ <phrase_prefix> ] <dgndictation>;
+
+#[TODO] interleave formatting, aliases, etc.
+
+#------------------------------------------------#
+
+<phrase_prefix>
+ = <phrase_case>
+ | <phrase_join>
+ | <phrase_group>
+ ;
+
+#------------------------------------------------#
+
+<phrase_case>
+ = "lower" | "upper" | "copper";
+
+#------------------------------------------------#
+
+<phrase_join>
+ =   "camel case"
+ |   "class case"
+ |    "bash case"
+ |   "snake case"
+ |    "lisp case"
+ | "chimera case"
+ | "squeeze case"
+ ;
+
+# ^
+# camelCase
+# ClassCase
+# snake_case
+# lisp-case
+# squeezecase
+# BASH_CASE     = snake_case + UPPER CASE
+# Chimera_Case  = camelCase + snake_case
+# 
+# 
+
+#------------------------------------------------#
+
+<phrase_group>
+ = "round"   <char>
+ | "par"
+ | "square"
+ | "curl"
+ | "angle"
+ | "string"
+ | "ticked"
+ | "norm"
+ | "bold"
+ ;
+
+# ^
+# 
+# 
+# 
+
+#------------------------------------------------#
+
+<char>
+ = <letter_ipa>
+ | <letter_sboo>
+ | <symbol_sboo>
+ ;
+
+#------------------------------------------------#
+
+<letter>
+ = <letter_sboo>
+ | <symbol_sboo>
+ ;
+
+#------------------------------------------------#
+
+<symbol_sboo>
+ = "grave"    # '`'
+ | "till"     # '~'
+ | "bang"     # '!'
+ | "axe"      # '@'
+ | "pound"    # '#'
+ | "doll"     # '$'
+ | "purse"    # '%'
+ | "care"     # '^'
+ | "amp"      # '&'
+ | "star"     # '*'
+ | "lore"     # '('
+ | "roar"     # ')'
+ | "hit"      # '-' 
+ | "score"    # '_'
+ | "equal"    # '='
+ | "plus"     # '+'
+ | "lack"     # '['
+ | "lace"     # '{'
+ | "rack"     # ']'
+ | "race"     # '}'
+ | "stroke"   # '\\'
+ | "pipe"     # '|'
+ | "semi"     # ';'
+ | "coal"     # ':'
+ | "tick"     # '\''
+ | "quote"    # '...'
+ | "com"      # ','
+ | "less"     # '<'
+ | "dot"      # '.'
+ | "great"    # '>'
+ | "slash"    # '/'
+ | "quest"    # '?'
+ | "tab"      # '\t'
+ | "ace"      # ' '
+ | "ret"      # '\n' 
+ ;
+
+#------------------------------------------------#
+
+<letter_sboo> = <letter_ipa>;
+
+#TODO# = ""    # 'a'
+#TODO# | ""    # 'b'
+#TODO# | ""  # 'c'
+#TODO# | ""    # 'd'
+#TODO# | ""     # 'e'
+#TODO# | ""  # 'f'
+#TODO# | ""     # 'g'
+#TODO# | ""    # 'h'
+#TODO# | ""    # 'i'
+#TODO# | ""   # 'j'
+#TODO# | ""     # 'k'
+#TODO# | ""     # 'l'
+#TODO# | ""     # 'm'
+#TODO# | "" # 'n'
+#TODO# | ""    # 'o'
+#TODO# | ""    # 'p'
+#TODO# | ""   # 'q'
+#TODO# | ""    # 'r'
+#TODO# | ""   # 's'
+#TODO# | ""    # 't'
+#TODO# | ""  # 'u'
+#TODO# | ""   # 'v'
+#TODO# | ""  # 'w'
+#TODO# | ""    # 'x'
+#TODO# | ""   # 'y'
+#TODO# | ""     # 'z'
+#TODO# ;
+
+#------------------------------------------------#
+
+<letter_ipa>
+ = "alpha"    # 'a'
+ | "bravo"    # 'b'
+ | "charlie"  # 'c'
+ | "delta"    # 'd'
+ | "echo"     # 'e'
+ | "foxtrot"  # 'f'
+ | "golf"     # 'g'
+ | "hotel"    # 'h'
+ | "india"    # 'i'
+ | "juliet"   # 'j'
+ | "kilo"     # 'k'
+ | "lima"     # 'l'
+ | "mike"     # 'm'
+ | "november" # 'n'
+ | "oscar"    # 'o'
+ | "poppa"    # 'p'
+ | "quebec"   # 'q'
+ | "romeo"    # 'r'
+ | "sierra"   # 's'
+ | "tango"    # 't'
+ | "uniform"  # 'u'
+ | "victor"   # 'v'
+ | "whiskey"  # 'w'
+ | "x-ray"    # 'x'
+ | "yankee"   # 'y'
+ | "zulu"     # 'z'
+ ;
+
+#------------------------------------------------#
+
+##################################################
+# Notes ##########################################
+##################################################
+
+# -- | a sub-phrase where a phrase to the right is certain.
+# --
+# -- this ordering prioritizes the escaping Escaped_/Quoted_ over the
+# -- escaped, e.g. "quote greater equal unquote".
+# phraseA :: DNSEarleyRHS Phrase_
+# phraseA = 'phraseA <=> empty
+#  <|> pasted 
+#  <|> Blank_      <$ "blank"
+#  -- <|> Spelled_    <$ "spell" # (character-++)
+#  -- <|> Spelled_    <$ "lets" # letters -- (letter-++)
+#  <|> Bonked_     <$  "smack"   -- (like saying "break" enough times) 
+#  <|> Separated_  <$> separator
+#  <|> Cased_      <$> casing
+#  <|> Joined_     <$> joiner
+#  <|> Surrounded_ <$> brackets
+#  <|> Splitted_   <$> splitter 
+
+# casing = 'casing
+#  <=> LowerCase <$ "lower"
+#  <|> UpperCase <$ "upper"
+#  <|> CapCase   <$ "copper"              -- "capper" 
+
+# joiner = 'joiner
+#  <=> (\c -> Joiner [c]) <$ "join" <*> character
+#  <|> Joiner "_" <$ "snake"
+#  <|> Joiner "-" <$ "dash"
+#  -- <|> Joiner "/" <$ "file"
+#  <|> Joiner ""  <$ "squeeze"
+#  <|> CamelJoiner <$ "camel"    -- "cam"
+#  <|> ClassJoiner <$ "class"
+#  <|> ShrinkJoiner <$ "shrink"  -- "shrink plug-in" -> "plugin"
+
+# brackets = 'brackets
+#  <=> bracket          <$ "round" <*> character
+#  <|> Brackets "(" ")" <$ "par"
+#  <|> Brackets "[" "]" <$ "square"
+#  <|> Brackets "{" "}" <$ "curl"
+#  <|> Brackets "<" ">" <$ "angle"
+#  <|> bracket '"'      <$ "string"
+#  <|> bracket '\''     <$ "ticked"
+#  <|> bracket '|'      <$ "norm"
+#  -- <|> Brackets "**" "**" <$ "bold"
+
+# splitter = 'splitter 
+#  <=> Splitter <$ "split" 
+# -- e.g. "split reach_YouTube" -> "reach you tube"  
+
+# -- disjoint vocabulary ("effects"), possibly overlapping parses ("results")
+# character :: DNSEarleyRHS Char
+# character = 'character <=> empty
+#  <|> punctuationRHS
+#  <|> englishNumericRHS
+#  <|> literalNumericRHS
+#  <|> phoneticAlphabetRHS
+
+# punctuationRHS :: DNSEarleyRHS Char
+# punctuationRHS = vocab
+#  [ "grave"-: '`'
+#  , "till"-: '~'
+#  , "bang"-: '!'
+#  , "axe"-: '@'
+#  , "pound"-: '#'
+#  , "doll"-: '$'
+#  , "purse"-: '%'
+#  , "care"-: '^'
+#  , "amp"-: '&'
+#  , "star"-: '*'
+#  , "lore"-: '('
+#  , "roar"-: ')'
+#  , "hit"-: '-'                  -- during a Phrase,Dragon recognizes "dash" literally as "-" 
+#  , "score"-: '_'
+#  , "equal"-: '='
+#  , "plus"-: '+'
+#  , "lack"-: '['
+#  , "lace"-: '{'
+#  , "rack"-: ']'
+#  , "race"-: '}'
+#  , "stroke"-: '\\'
+#  , "pipe"-: '|'
+#  , "semi"-: ';'
+#  , "coal"-: ':'
+#  , "tick"-: '\''
+#  , "quote"-: '"'
+#  , "com"-: ','
+#  , "less"-: '<'
+#  , "dot"-: '.'
+#  , "great"-: '>'
+#  , "slash"-: '/'
+#  , "quest"-: '?'
+#  , "tab"-: '\t'
+#  , "ace"-: ' '
+#  , "ret"-: '\n'  -- "line" conflicts with (Line :: Region)  
+#  ]
+
+# {- | equivalent to:
+
+# @
+#  <|> '0' <$ "0"
+#  <|> '1' <$ "1"
+#  ...
+#  <|> '9' <$ "9"
+# @
+
+# -}
+# literalNumericRHS :: DNSEarleyRHS Char
+# literalNumericRHS = foldMap (\c -> c <$ token [c]) ['0'..'9']
+
+# phoneticAlphabetRHS :: DNSEarleyRHS Char
+# phoneticAlphabetRHS = vocab phoneticAlphabet
+
+# phoneticAlphabet :: [(String, Char)] 
+# phoneticAlphabet =
+#  [ "alpha"-: 'a'
+#  , "bravo"-: 'b'
+#  , "charlie"-: 'c'
+#  , "delta"-: 'd'
+#  , "echo"-: 'e'
+#  , "foxtrot"-: 'f'
+#  , "golf"-: 'g'
+#  , "hotel"-: 'h'
+#  , "india"-: 'i'
+#  , "juliet"-: 'j'
+#  , "kilo"-: 'k'
+#  , "lima"-: 'l'
+#  , "mike"-: 'm'
+#  , "november"-: 'n'
+#  , "oscar"-: 'o'
+#  , "poppa"-: 'p'
+#  , "quebec"-: 'q'
+#  , "romeo"-: 'r'
+#  , "sierra"-: 's'
+#  , "tango"-: 't'
+#  , "uniform"-: 'u'
+#  , "victor"-: 'v'
+#  , "whiskey"-: 'w'
+#  , "x-ray"-: 'x'
+#  , "yankee"-: 'y'
+#  , "zulu"-: 'z'
+#  ]
 
 ##################################################
