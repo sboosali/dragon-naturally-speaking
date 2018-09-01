@@ -26,12 +26,32 @@ build:
 
 ##################################################
 
-execute:
-	SBOO_NATLINK=1 python $(COMMANDS_FILE)
-#	SBOO_NATLINK=1 python $(SELECTION_FILE)
-#	SBOO_NATLINK=1 python $(DICTATION_FILE)
+execute: execute-dictation
 
 .PHONY: execute
+
+#------------------------------------------------#
+
+execute-commands:
+	SBOO_NATLINK=1 python $(COMMANDS_FILE)
+
+.PHONY: execute-commands
+
+#------------------------------------------------#
+
+execute-dictation:
+	SBOO_NATLINK=1 python $(DICTATION_FILE)
+
+.PHONY: execute-dictation
+
+#------------------------------------------------#
+
+# execute-selection:
+# 	SBOO_NATLINK=1 python $(SELECTION_FILE)
+#
+# .PHONY: execute-selection
+
+#------------------------------------------------#
 
 ##################################################
 

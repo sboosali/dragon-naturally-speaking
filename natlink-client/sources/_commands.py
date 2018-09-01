@@ -25,9 +25,10 @@ from   ConfigParser import ConfigParser
 ##################################################
 # (project (local) modules)
 
-from   sboo.types     import *
-from   sboo.grammar   import *
 from   sboo.utilities import *
+from   sboo.api       import *
+from   sboo.grammar   import *
+from   sboo.types     import *
 
 ##################################################
 # (natlink13 modules)
@@ -105,9 +106,6 @@ except (IOError, ValueError) as e:
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # The Server's Address
-        
-defaultAddress = Address(host = "192.168.56.1",
-                         port = 3428)
 
 address_file = commands_data_file('client.ini')
 
