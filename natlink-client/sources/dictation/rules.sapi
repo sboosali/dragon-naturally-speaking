@@ -1,0 +1,134 @@
+##################################################
+# builtin non-terminals ##########################
+##################################################
+
+<dgndictation> imported;
+<dgnletters>   imported;
+
+##################################################
+# public non-terminals ###########################
+##################################################
+
+<dictating> exported = [ say ] <dgndictation>;
+<spelling>  exported = spell   <dgnletters>;
+
+<inserting> exported = send [ <insertion_method> ] <dgndictation>;
+
+##################################################
+# private non-terminals ##########################
+##################################################
+
+<insertion_method> = text | keys | clip | paste;
+
+##################################################
+# Notes ##########################################
+##################################################
+ 
+# a minimal grammar for dictating text.
+#
+#
+
+##################################################
+
+# the grammar's terminals are all [1] monosyllabic and [2] prefixes of a non-terminal.
+#
+
+##################################################
+
+# the meaning of each `<insertion_method>` is:
+
+# - `text`: send text 'directly',
+# - `keys`: send text as keysequence.
+# - `clip`: copy text to the system clipboard
+# - `paste`: 
+#
+
+# the expected behaviors (and limitations) of each `<insertion_method>` is:
+
+# - `text`: 
+#    
+#    send text 'directly' via the Operating System's API. 
+#
+#    Benefits: supports Unicode.
+#    
+#    e.g. in the `Win32 API`. the implementation can use `SendText` (TODO?).
+#     
+#    
+#    
+#    
+#    
+#    
+#    
+#    
+    
+# - `keys`: 
+#    
+#    translate the text into a keysequence,
+#    then send those keypress events via the Operating System's API.
+#    
+#    Limitations include: no Unicode support, unless the characters; dropped characters, for example, from the operating-system or the application incorrectly 'debouncing' duplicate characters (as if the user fingers stuttered on a physical key or held it down a bit too long).
+#    
+#    e.g. in the `Win32 API`. the implementation can use `SendKeys`.
+#    
+#    
+#    
+    
+# - `clip`: 
+#    
+#    copy the text to the system clipboard via the Operating System's API,
+#    then paste the system clipboard 'directly' via the Operating System's API.
+#    
+#    e.g. in the `Win32 API`. the implementation can use the `CLIPBOARD` event (TODO?).
+#    
+#    
+#    
+#    
+#    
+#    
+#    
+    
+# - `paste`: 
+#    
+#    copy the text to the system clipboard via the Operating System's API,
+#    then press a (configurable) keyboard to paste the text ('indirectly').
+#
+#    standard keybindings, for the 'paste' action, include:
+#
+#    - `C-v`:
+#       on Linux and Windows.
+#
+#    - `⌘-v`:
+#       on Apple. (a.k.a. `M-v` a.k.a. `<meta>-v`).
+#       
+#    - `C-y`: 
+#      for Emacs (by default).
+#
+#    - `C-S-v`:
+#       for most terminal-emulators.
+#    
+#    most applications 'cleanly' support pasting-by-keybinding. 
+#    most importantly, pasting arbitrary text will work. 'arbitrary' includes:
+#    text of any length, text with unicode characters, text with duplicate characters, etc. 
+#    (c.f. Windows and/or Windows applications,  which are (unfortunately)
+#    frequently buggy; in particular, text with duplicate characters, or text insertion whose events are sent too quickly, or even newlines (TODO send carridge-return?), randomly suffer dropped characters or are *incorrectly* 'debounced'; this requires the implementation of the `keys` insertion method to have work-arounds.)
+#    most applications support pasting-by-keybinding `naturally` too.
+#    that is, any 'hooks' should work; like formatting, indentation, alignment, and so on will work too.
+#    (TODO: pasting images (like `.png`), formatted-text (like `.html`), and so on works.)
+#    
+#    e.g. in the `Win32 API`. the implementation can use `SendText(<ctrl_mask>, <v_key>)` (TODO?).
+#    
+#
+
+# `<inserting>` provides robustness, as different insertion-methods
+# have different pros-and-cons.
+# 
+# e.g. 
+#
+#
+##################################################
+
+#
+##################################################
+
+#
+##################################################
