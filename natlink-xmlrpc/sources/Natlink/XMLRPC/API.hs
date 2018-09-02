@@ -5,7 +5,7 @@
 
 {-|
 
-
+The **handlers** and **endpoints** of the XML-RPC server.
 
 -}
 
@@ -32,14 +32,19 @@ import Prelude_natlink_xmlrpc
 
 -}
 
-add :: Int -> Int -> IO Int
-add x y = return (x + y)
+recognizeEndpoint :: String
+recognizeEndpoint = "natlink.recognize"
 
 --------------------------------------------------
 
 {-|
 
 -}
+
+recognizeHandler :: String -> IO Bool
+recognizeHandler recognition = do
+  putStrLn recognition
+  return True
 
 --------------------------------------------------
 

@@ -31,9 +31,9 @@ import Prelude_natlink_xmlrpc
 
 main :: IO ()
 main = RPC.cgiXmlRpcServer
-  [ ("examples.add", RPC.fun add)
-  ]
 
+  [ recognizeEndpoint -: RPC.fun recognizeHandler
+  ]
 
 --------------------------------------------------
 
