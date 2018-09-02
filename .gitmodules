@@ -1,0 +1,3 @@
+[submodule "haxr"]
+	path = vendor/haxr
+	url = https://github.com/byorgey/haxr

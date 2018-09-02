@@ -26,12 +26,12 @@ repl:
 # 	cabal --enable-nix new-build all
 
 ####################
-execute:
-	cabal new-run ...
+# execute:
+# 	cabal new-run ...
 
 ####################
 clean:
-	rm -rf dist/ dist-newstyle/ .sboo/
+	rm -rf "dist/" "dist-newstyle/" ".sboo/"
 	rm -f *.project.local .ghc.environment.*
 
 ##################################################
@@ -64,7 +64,7 @@ nix-compile:
 
 ####################
 cabal-compile:
-	cabal new-build all
+	cabal new-build all --allow-newer
 
 ####################
 stack-compile:
@@ -76,9 +76,9 @@ build: check compile
 
 ####################
 tags: compile
-	mkdir -p ".sboo/tags/natlink"
+	mkdir -p     ".sboo/tags/natlink"
 	fast-tags -o ".sboo/tags/natlink" -R ./natlink
-	cat ".sboo/tags/natlink"
+	cat          ".sboo/tags/natlink"
 
 ####################
 update:
@@ -95,7 +95,7 @@ build-docs: compile
 
 ########################
 copy-docs: build-docs
-	rm -fr ".sboo/documentation/"
+	rm -fr   ".sboo/documentation/"
 	mkdir -p ".sboo/documentation/"
 	cp -aRv  ./dist-newstyle/build/*-*/ghc-*/natlink-*/noopt/doc/html/natlink ".sboo/documentation/natlink"
 
