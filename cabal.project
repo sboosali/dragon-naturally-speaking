@@ -10,8 +10,6 @@ packages:
 ----------------------------------------
 optional-packages:
 
- ./vendor/*
-
  ../HaXml2
  ../xmlrpc
  -- ^ add `Semigroup` instances to `HaXml` and `haxr` for `base>=4.11`
@@ -19,6 +17,8 @@ optional-packages:
  ../spiros
  -- ../enumerate/enumerate
  -- ../enumerate/enumerate-function
+
+ -- ./vendor/*
 
 --------------------------------------------------
 ---extra-packages:

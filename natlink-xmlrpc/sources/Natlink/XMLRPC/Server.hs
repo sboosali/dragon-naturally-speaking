@@ -12,6 +12,7 @@ module Natlink.XMLRPC.Server where
 --------------------------------------------------
 
 import Natlink.XMLRPC.Types
+import Natlink.XMLRPC.API
 
 --------------------------------------------------
 
@@ -32,6 +33,7 @@ main :: IO ()
 main = RPC.cgiXmlRpcServer
   [ ("examples.add", RPC.fun add)
   ]
+
 
 --------------------------------------------------
 

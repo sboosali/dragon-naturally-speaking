@@ -19,8 +19,29 @@ check:
 	cabal new-build -fno-code -O0 all
 
 ####################
-repl:
+repl: repl-natlink
+
+.PHONY: repl
+
+####################
+repl-natlink: repl-natlink
 	cabal new-repl natlink
+
+.PHONY: repl-natlink
+
+####################
+
+repl-natlink-xmmlrpc:
+	cabal new-repl natlink-xmlrpc
+
+.PHONY: repl-natlink-xmmlrpc
+
+####################
+
+repl-natlink-http:
+	cabal new-repl natlink-http
+
+.PHONY: repl-natlink-http
 
 # ####################
 # install:
@@ -48,6 +69,11 @@ natlink:
 natlink-http:
 	cabal new-build natlink-http
 	cabal new-run   natlink-http-start
+
+####################
+natlink-xmlrpc:
+	cabal new-build natlink-xmlrpc
+	cabal new-run   natlink-xmlrpc-start
 
 ##################################################
 ##################################################

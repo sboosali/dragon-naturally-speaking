@@ -1,4 +1,4 @@
 {-# LANGUAGE ImplicitPrelude #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
-import qualified Natlink.HTTP.Server as Library
+import qualified Natlink.XMLRPC.Server as Library
 main = Library.main
