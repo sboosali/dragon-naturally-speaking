@@ -297,12 +297,11 @@ library
   , reducers
 
   --------------------
-  -- Web packages
+  -- Web/XML packages
   --------------------
 
   , warp
-
-  , haxr
+  , haxr >= 3000.11.3
 
   -- --------------------
   -- -- `servant` packages
