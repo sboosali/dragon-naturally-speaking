@@ -11,7 +11,8 @@ all: compile docs release tags
 ##################################################
 ##################################################
 configure:
-	nix-shell --run 'cabal new-configure --project-file ./cabal.project'
+	nix-env -i -f ./nix/environment.nix
+#	nix-shell --run 'cabal new-configure --project-file ./cabal.project'
 
 ####################
 check:
