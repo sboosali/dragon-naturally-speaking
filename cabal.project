@@ -10,8 +10,11 @@ packages:
 ----------------------------------------
 optional-packages:
 
- ../HaXml2
  ../xmlrpc
+ ../HaXml2
+
+ ../haxr
+ ../HaXml
  -- ^ add `Semigroup` instances to `HaXml` and `haxr` for `base>=4.11`
 
  ../spiros

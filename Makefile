@@ -137,6 +137,16 @@ docs: build-docs copy-docs open-docs
 ##################################################
 
 ####################
+
+watch:
+	ghcid -c 'cabal --ghc-option="-fdiagnostics-color=always" new-repl natlink'
+
+.PHONY: watch
+
+##################################################
+##################################################
+
+####################
 sdist:
 	(cd ./natlink/ && cabal check && cabal sdist)
 
