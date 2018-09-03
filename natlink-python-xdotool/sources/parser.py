@@ -11,6 +11,7 @@
 # (standard-library modules)
 
 import os
+import sys
 
 ##################################################
 # (project modules)
@@ -52,7 +53,7 @@ def parse_sapi_file(rules_file):
 
 if __name__ == "__main__":
     
-    rules_file = "/home/sboo/haskell/dragon-naturally-speaking/natlink-python-/sources/dictation/rules.sapi"
+    rules_file = sys.argv[1]
     
     parse_sapi_file(rules_file)
 

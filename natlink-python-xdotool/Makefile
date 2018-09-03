@@ -1,20 +1,33 @@
 ##################################################
 
-Directory=./sources
+.EXPORT_ALL_VARIABLES:
 
-Client=$(Directory)/client.py
-Server=$(Directory)/server.py
-Parser=$(Directory)/parser.py
+##################################################
 
-Environment=SBOO_NATLINK=1
-
-Nixpkgs=./nix/nixpkgs
+SBOO_NATLINK=1
+# ^ Project-Specific Environment-Variable;
+# it means that we're on the (non-Windows) host,
+# either running the server or testing the client.
 
 Python=python
+
+#------------------------------------------------#
+
+SourceDirectory=./sources
+
+NixDirectory=./nix
+
+#------------------------------------------------#
+
+Client=$(SourceDirectory)/client.py
+Server=$(SourceDirectory)/server.py
+Parser=$(SourceDirectory)/parser.py
 
 CheckPython=$(Python) -m compileall
 CheckLists=jsonlint
 CheckRules=$(Python) $(Parser)
+
+Environment=SBOO_NATLINK=1
 
 ##################################################
 #------------------------------------------------#
@@ -39,7 +52,7 @@ check: check-lists check-rules
 
 build:
 	export $(Environment)
-	find $(Directory) -name '*.py' -print0 | xargs -n 1 -0 $(CheckPython)
+	find $(SourceDirectory) -name '*.py' -print0 | xargs -n 1 -0 $(CheckPython)
 
 .PHONY: build
 
@@ -50,7 +63,7 @@ check-rules:
 	@echo 
 	@echo --------------------------------------------------
 	@echo 
-	find $(DIRECTORY) -type f -name '*.sapi' -print0 | xargs -n 1 -0 $(CheckRules)
+	find $(SourceDirectory) -type f -name '*.sapi' -print0 | xargs -n 1 -0 $(CheckRules)
 	@echo 
 	@echo --------------------------------------------------
 
@@ -63,7 +76,7 @@ check-lists:
 	@echo 
 	@echo --------------------------------------------------
 	@echo 
-	find $(Directory) -type f -name '*.json' -print0 | xargs -n 1 -0 $(CheckLists)
+	find $(SourceDirectory) -type f -name '*.json' -print0 | xargs -n 1 -0 $(CheckLists)
 	@echo 
 	@echo --------------------------------------------------
 
@@ -97,7 +110,8 @@ execute-client:
 
 clean:
 	export $(Environment)
-	find $(Directory) -name '*.pyc' -exec rm {} \;
+	find $(SourceDirectory) -name '*.pyc'                          -exec rm {} \;
+	find $(SourceDirectory) -name 'error_info_natlink_grammar.txt' -exec rm {} \;
 
 .PHONY: clean
 
@@ -105,11 +119,11 @@ clean:
 
 install:
 
-	nix-env -i -f $(Nixpkgs) -A python27
-	nix-env -i -f $(Nixpkgs) -A xdotool
+	nix-env -i -f $(NixDirectory)/nix -A python27
+	nix-env -i -f $(NixDirectory)/nix -A xdotool
 
-	nix-env -i -f $(Nixpkgs) -A nodePackages.jsonlint
-	nix-env -i -f $(Nixpkgs) -A python27Packages.enum34
+	nix-env -i -f $(NixDirectory)/nix -A nodePackages.jsonlint
+	nix-env -i -f $(NixDirectory)/nix -A python27Packages.enum34
 
 .PHONY: install
 
