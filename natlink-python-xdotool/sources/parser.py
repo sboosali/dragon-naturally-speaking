@@ -52,7 +52,7 @@ def parse_sapi_file(rules_file):
 
 if __name__ == "__main__":
     
-    rules_file = "/home/sboo/haskell/dragon-naturally-speaking/natlink-python-xmlrpc-client-xdotool-server/sources/dictation/rules.sapi"
+    rules_file = "/home/sboo/haskell/dragon-naturally-speaking/natlink-python-/sources/dictation/rules.sapi"
     
     parse_sapi_file(rules_file)
 

@@ -6,7 +6,9 @@ Client=$(Directory)/client.py
 Server=$(Directory)/server.py
 Parser=$(Directory)/parser.py
 
-Environment=SBOO_NATLINK=1 
+Environment=SBOO_NATLINK=1
+
+Nixpkgs=./nix/nixpkgs
 
 Python=python
 
@@ -102,8 +104,12 @@ clean:
 #------------------------------------------------#
 
 install:
-	nix-env -i -A nodePackages.jsonlint
-	nix-env -i -A nixpkgs.python27.enum34
+
+	nix-env -i -f $(Nixpkgs) -A python27
+	nix-env -i -f $(Nixpkgs) -A xdotool
+
+	nix-env -i -f $(Nixpkgs) -A nodePackages.jsonlint
+	nix-env -i -f $(Nixpkgs) -A python27Packages.enum34
 
 .PHONY: install
 
