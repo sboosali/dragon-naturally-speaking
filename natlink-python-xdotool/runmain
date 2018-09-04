@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+# Usage
+# =====
+# ./runmain ./sources/server.py
+#
+
+Usage="<<< $0 FILE MAIN >>>"
+
+File="${1:?${Usage}}"
+Main="${2:-main}"
+
+python "${File}" -m "${Main}"
+
+# Why? Because otherwise:
+#
+#     Traceback (most recent call last):
+#       File "./sources/server.py", line 4, in <module>
+#         from .xdotool import *
+#     ValueError: Attempted relative import in non-package
+#
+# 
