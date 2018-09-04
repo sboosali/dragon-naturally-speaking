@@ -3,15 +3,15 @@ set -e
 
 # Usage
 # =====
-# ./runmain ./sources/server.py
+# ./runmain server main
 #
 
-Usage="<<< $0 FILE MAIN >>>"
+Usage="<<< $0 MODULE_NAME MODULE_FUNCTION >>>"
 
-File="${1:?${Usage}}"
-Main="${2:-main}"
+Module="${1:?${Usage}}"
+Function="${2:-main}"
 
-python "${File}" -m "${Main}"
+python -m "${Module}.${Function}"
 
 # Why? Because otherwise:
 #

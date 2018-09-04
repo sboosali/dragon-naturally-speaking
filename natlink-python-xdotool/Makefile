@@ -13,7 +13,7 @@ Python=python
 
 #------------------------------------------------#
 
-SourceDirectory=./sources
+SourceDirectory=.
 
 NixDirectory=./nix
 
@@ -85,25 +85,33 @@ check-lists:
 ##################################################
 #------------------------------------------------#
 
-execute: execute-server
+execute: execute-client
 
 .PHONY: execute
 
 #------------------------------------------------#
 
-execute-server:
+serve:
 	export $(Environment)
-	$(Python) $(Server)
+	$(Python) -m server.main
 
-.PHONY: execute-server
+.PHONY: serve
 
 #------------------------------------------------#
 
 execute-client:
 	export $(Environment)
-	$(Python) $(Client)
+	$(Python) -m server.client
 
 .PHONY: execute-client
+
+#------------------------------------------------#
+
+# execute-server:
+# 	export $(Environment)
+# 	$(Python) -m server.main
+#
+# .PHONY: execute-server
 
 ##################################################
 #------------------------------------------------#

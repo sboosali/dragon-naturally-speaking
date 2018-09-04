@@ -21,15 +21,22 @@ def day(days):
 
 ##################################################
 
-server = SimpleXMLRPCServer(("localhost", 8000))
+def main():
+    
+    server = SimpleXMLRPCServer(("localhost", 8000))
+    
+    server.register_function(day, "day")
+    server.register_function(count)
+    #server.register_function(xdotool_keys, "keys")
+    server.register_function(xdotool_chars, "text")
+    
+    server.register_introspection_functions() 
+    
+    server.serve_forever()
 
-server.register_function(day, "day")
-server.register_function(count)
-#server.register_function(xdotool_keys, "keys")
-server.register_function(xdotool_chars, "text")
+##################################################
 
-server.register_introspection_functions() 
-
-server.serve_forever()
+if __name__ == '__main__':
+    main()
 
 ##################################################
