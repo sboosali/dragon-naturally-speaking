@@ -9,9 +9,8 @@ from   .utilities import *
 ##################################################
 # (natlink13 modules)
 
-from   natlinkmain import (setCheckForGrammarChanges)
-import natlink
-# ^ (a DLL)
+from .natlinkmain import (setCheckForGrammarChanges)
+from .natlink     import (setMicState, getMicState)
 
 ##################################################
 # (standard-library modules)

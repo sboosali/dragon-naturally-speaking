@@ -3,7 +3,7 @@
 ##################################################
 # project (local) modules:
 
-from   enum import (Enum)
+from   ..enum import (Enum)
        # ^ vendored `enum34` package, version `1.1.6`.
 
 ##################################################

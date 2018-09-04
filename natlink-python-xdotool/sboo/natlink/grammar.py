@@ -8,9 +8,8 @@ from   .api   import *
 ##################################################
 # natlink13 modules:
 
-from   natlinkutils import (GrammarBase)
-import natlink
-# ^ (a DLL)
+from .natlinkutils import (GrammarBase)
+from .natlink      import (OutOfRange)
 
 ##################################################
 # standard-library modules:
@@ -61,7 +60,7 @@ def get_results(resultsObject):
         for number in xrange(10):
             yield resultsObject.getWords(number)
 
-    except natlink.OutOfRange:
+    except OutOfRange:
         return
 
         # "exceptions aren't exceptional" lmfao.

@@ -38,19 +38,21 @@ from   sboo.natlink.types     import *
 
 if os.environ.get('SBOO_NATLINK'):
     # the environment-variable is set.
-    from sboo.natlink.natlinkmain import (setCheckForGrammarChanges)
+    from sboo.shims.natlinkmain import (setCheckForGrammarChanges)
     # ^ for testing on the host, import stubbed `natlink` signatures.
 
 else:
     # the environment-variable is unset or set to a falsy value.
-    from      natlinkmain import (setCheckForGrammarChanges)
+    from natlinkmain import (setCheckForGrammarChanges)
     # ^ for running on the guest.
 
+#------------------------------------------------#
+
 if os.environ.get('SBOO_NATLINK'):
-    import sboo.natlink.gramparser as gramparser
+    import sboo.shims.gramparser as gramparser
 
 else:
-    import                    gramparser
+    import gramparser
 
 # ^ `gramparser`:
 #

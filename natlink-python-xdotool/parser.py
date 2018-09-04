@@ -20,7 +20,7 @@ import sys
 # (natlink13 modules)
 
 if os.environ.get('SBOO_NATLINK'):
-    import sboo.gramparser as gramparser
+    import sboo.shims.gramparser as gramparser
 else:
     import                    gramparser
 

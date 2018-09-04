@@ -13,26 +13,29 @@ Python=python
 
 #------------------------------------------------#
 
-SourceDirectory=.
+SourceDirectory=./sboo
+PluginsDirectory=$(SourceDirectory)/plugins
 
 NixDirectory=./nix
 
 #------------------------------------------------#
 
-Client=$(SourceDirectory)/client.py
-Server=$(SourceDirectory)/server.py
-Parser=$(SourceDirectory)/parser.py
+Client=sboo.client.client
+Server=sboo.server.server
+
+Parser=./parser.py
+Plugin=./_dictation.py
 
 CheckPython=$(Python) -m compileall
-CheckLists=jsonlint
 CheckRules=$(Python) $(Parser)
+CheckLists=jsonlint
 
 Environment=SBOO_NATLINK=1
 
 ##################################################
 #------------------------------------------------#
 
-default: check build
+default: check execute-plugin
 
 .PHONY: default
 
@@ -43,18 +46,18 @@ default: check build
 
 #------------------------------------------------#
 
-check: check-lists check-rules
+check: check-python check-lists check-rules
 
 .PHONY: check
 
 ##################################################
 #------------------------------------------------#
 
-build:
+check-python:
 	export $(Environment)
-	find $(SourceDirectory) -name '*.py' -print0 | xargs -n 1 -0 $(CheckPython)
+	find . -name '*.py' -print0 | xargs -n 1 -0 $(CheckPython)
 
-.PHONY: build
+.PHONY: check-python
 
 #------------------------------------------------#
 
@@ -63,7 +66,7 @@ check-rules:
 	@echo 
 	@echo --------------------------------------------------
 	@echo 
-	find $(SourceDirectory) -type f -name '*.sapi' -print0 | xargs -n 1 -0 $(CheckRules)
+	find $(PluginsDirectory) -type f -name '*.sapi' -print0 | xargs -n 1 -0 $(CheckRules)
 	@echo 
 	@echo --------------------------------------------------
 
@@ -76,7 +79,7 @@ check-lists:
 	@echo 
 	@echo --------------------------------------------------
 	@echo 
-	find $(SourceDirectory) -type f -name '*.json' -print0 | xargs -n 1 -0 $(CheckLists)
+	find $(PluginsDirectory) -type f -name '*.json' -print0 | xargs -n 1 -0 $(CheckLists)
 	@echo 
 	@echo --------------------------------------------------
 
@@ -85,41 +88,41 @@ check-lists:
 ##################################################
 #------------------------------------------------#
 
-execute: execute-client
+execute: execute-plugin
 
 .PHONY: execute
 
 #------------------------------------------------#
 
-serve:
+execute-plugin:
 	export $(Environment)
-	$(Python) -m .server.main
+	$(Python) $(Plugin)
 
-.PHONY: serve
+.PHONY: execute-plugin
 
 #------------------------------------------------#
 
 execute-client:
 	export $(Environment)
-	$(Python) -m server.client
+	$(Python) -m $(Client)
 
 .PHONY: execute-client
 
 #------------------------------------------------#
 
-# execute-server:
-# 	export $(Environment)
-# 	$(Python) -m server.main
-#
-# .PHONY: execute-server
+execute-server:
+	export $(Environment)
+	$(Python) -m $(Server)
+
+.PHONY: execute-server
 
 ##################################################
 #------------------------------------------------#
 
 clean:
 	export $(Environment)
-	find $(SourceDirectory) -name '*.pyc'                          -exec rm {} \;
-	find $(SourceDirectory) -name 'error_info_natlink_grammar.txt' -exec rm {} \;
+	find . -name '*.pyc'                          -exec rm {} \;
+	find . -name 'error_info_natlink_grammar.txt' -exec rm {} \;
 
 .PHONY: clean
 
