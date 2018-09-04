@@ -10,10 +10,10 @@ import datetime
 
 proxy = xmlrpclib.ServerProxy("http://localhost:8000/")
 
-today = proxy.today()
+day = proxy.day(30)
 
-converted = datetime.datetime.strptime(today.value, "%Y%m%dT%H:%M:%S")
+converted = datetime.datetime.strptime(day.value, "%Y%m%dT%H:%M:%S")
 # ^ convert the ISO8601 string to a datetime object
 
-print "Today: %s" % converted.strftime("%d.%m.%Y, %H:%M")
+print "Day: %s" % converted.strftime("%d.%m.%Y, %H:%M")
 

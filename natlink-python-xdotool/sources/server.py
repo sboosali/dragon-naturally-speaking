@@ -4,11 +4,12 @@ import datetime
 import xmlrpclib
 from SimpleXMLRPCServer import (SimpleXMLRPCServer)
 
-def today():
+def day(days):
     today = datetime.datetime.today()
-    return xmlrpclib.DateTime(today)
+    day = today + datetime.timedelta(days=1)
+    return xmlrpclib.DateTime(day)
 
 server = SimpleXMLRPCServer(("localhost", 8000))
-server.register_function(today, "today")
+server.register_function(day, "day")
 server.serve_forever()
 
