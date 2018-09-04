@@ -23,8 +23,6 @@ proxy = xmlrpclib.ServerProxy("http://localhost:8000/", verbose=True)
 # # ^ convert the ISO8601 string to a datetime object
 # print "Day: %s" % converted.strftime("%d.%m.%Y, %H:%M")
 
-#proxy.listMethods()
-
 ##################################################
 
 def main():
@@ -32,6 +30,35 @@ def main():
     print
     length = proxy.count("#hello <world>\n")
     print
+    print length
+    print
+    print '=================================================='
+    print
+    s = proxy.system.listMethods()
+    print
+    print s
+    print
+    print '=================================================='
+    print
+    s = proxy.system.methodSignature('count')
+    print
+    print s
+    print
+    # ^ "signatures not supported"
+    #
+    # lol python being dynamic kills signature inference:
+    # https://bugs.python.org/issue13404
+    #
+    print '=================================================='
+    print
+    s = proxy.system.methodHelp('count')
+    print
+    print s
+    print
+    # ^ 
+    #
+    # the `docstring`
+    #
     print '=================================================='
     print
 

@@ -12,6 +12,8 @@ from   SimpleXMLRPCServer import (SimpleXMLRPCServer)
 ##################################################
 
 def count(xs):
+    '''count the number of items in the input.
+    '''
     return len(xs)
 
 def day(days):
