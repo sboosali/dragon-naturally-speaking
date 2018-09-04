@@ -28,17 +28,17 @@ import os
 ##################################################
 # (project (local) modules)
 
-#from   sboo.utilities import *
-from   sboo.api       import *
-from   sboo.grammar   import *
-from   sboo.types     import *
+#from   sboo.natlink.utilities import *
+from   sboo.natlink.api       import *
+from   sboo.natlink.grammar   import *
+from   sboo.natlink.types     import *
 
 ##################################################
 # (natlink13 modules)
 
 if os.environ.get('SBOO_NATLINK'):
     # the environment-variable is set.
-    from sboo.natlinkmain import (setCheckForGrammarChanges)
+    from sboo.natlink.natlinkmain import (setCheckForGrammarChanges)
     # ^ for testing on the host, import stubbed `natlink` signatures.
 
 else:
@@ -47,7 +47,7 @@ else:
     # ^ for running on the guest.
 
 if os.environ.get('SBOO_NATLINK'):
-    import sboo.gramparser as gramparser
+    import sboo.natlink.gramparser as gramparser
 
 else:
     import                    gramparser

@@ -93,7 +93,7 @@ execute: execute-client
 
 serve:
 	export $(Environment)
-	$(Python) -m server.main
+	$(Python) -m .server.main
 
 .PHONY: serve
 
