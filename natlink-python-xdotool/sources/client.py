@@ -17,3 +17,5 @@ converted = datetime.datetime.strptime(day.value, "%Y%m%dT%H:%M:%S")
 
 print "Day: %s" % converted.strftime("%d.%m.%Y, %H:%M")
 
+recognition = proxy.text("#hello $world")
+
