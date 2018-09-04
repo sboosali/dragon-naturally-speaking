@@ -9,7 +9,7 @@ set -e
 Usage="<<< $0 MODULE_NAME MODULE_FUNCTION >>>"
 
 Module="${1:?${Usage}}"
-Function="${2:-__main__}"
+Function="${2:-main}"
 
 python -m "${Module}.${Function}"
 
